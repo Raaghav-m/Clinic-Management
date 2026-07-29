@@ -5,6 +5,7 @@ import com.raaghav.clinic.dto.PatientRequestDTO;
 import com.raaghav.clinic.dto.PatientResponseDTO;
 import com.raaghav.clinic.entity.Patient;
 import com.raaghav.clinic.service.PatientService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +17,7 @@ public class PatientController {
         this.service=service1;
     }
     @PostMapping
-    public PatientResponseDTO addPatient(@RequestBody PatientRequestDTO request){
+    public PatientResponseDTO addPatient(@Valid @RequestBody PatientRequestDTO request){
         return service.savePatient(request);
     }
 
