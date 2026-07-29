@@ -1,6 +1,9 @@
 package com.raaghav.clinic.service;
 
+import com.raaghav.clinic.dto.PatientRequestDTO;
+import com.raaghav.clinic.dto.PatientResponseDTO;
 import com.raaghav.clinic.entity.Patient;
+import com.raaghav.clinic.mapper.PatientMapper;
 import com.raaghav.clinic.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +14,10 @@ public class PatientService {
         this.patientRepository=patientRepository1;
         System.out.println("hello there");
     }
-    public Patient savePatient(Patient patient){
-        return patientRepository.save(patient);
+    public PatientResponseDTO savePatient(PatientRequestDTO request){
+        Patient patient= PatientMapper.toEntity(request);
+        Patient savedPatient= patientRepository.save(patient);
+        return PatientMapper.toResponse(savedPatient);
+
     }
 }

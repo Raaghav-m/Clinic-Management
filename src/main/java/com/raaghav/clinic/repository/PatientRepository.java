@@ -1,5 +1,6 @@
 package com.raaghav.clinic.repository;
 
+import com.raaghav.clinic.dto.PatientRequestDTO;
 import com.raaghav.clinic.entity.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 

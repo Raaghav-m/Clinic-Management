@@ -1,6 +1,8 @@
 package com.raaghav.clinic.controller;
 
 
+import com.raaghav.clinic.dto.PatientRequestDTO;
+import com.raaghav.clinic.dto.PatientResponseDTO;
 import com.raaghav.clinic.entity.Patient;
 import com.raaghav.clinic.service.PatientService;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +16,8 @@ public class PatientController {
         this.service=service1;
     }
     @PostMapping
-    public Patient addPatient(@RequestBody Patient patient){
-        return service.savePatient(patient);
+    public PatientResponseDTO addPatient(@RequestBody PatientRequestDTO request){
+        return service.savePatient(request);
     }
 
 }

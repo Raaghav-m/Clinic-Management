@@ -95,6 +95,16 @@ public class Patient {
     @Column(length=40,unique = true)
     private String email;
 
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    private Integer age;
+
     @Column (length=100)
     private String address;
     @Column(length=15,name="emergency_contact")
