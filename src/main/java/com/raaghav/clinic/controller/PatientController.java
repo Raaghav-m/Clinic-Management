@@ -43,4 +43,9 @@ public class PatientController {
         service.deletePatient(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/search")
+    public ResponseEntity<List<PatientResponseDTO>> searchPatientByName(@RequestParam String name){
+        return ResponseEntity.ok(service.getPatientsByName(name));
+    }
+
 }

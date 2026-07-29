@@ -42,4 +42,7 @@ public class PatientService {
         Patient patient=patientRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Patient with the id is not found"));
         patientRepository.delete(patient);
     }
+    public List<PatientResponseDTO> getPatientsByName(String searchString){
+        return patientRepository.findByNameContainingIgnoreCase(searchString).stream().map(PatientMapper::toResponse).toList();
+    }
 }
