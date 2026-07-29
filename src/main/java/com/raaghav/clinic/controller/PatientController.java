@@ -6,7 +6,10 @@ import com.raaghav.clinic.dto.PatientResponseDTO;
 import com.raaghav.clinic.entity.Patient;
 import com.raaghav.clinic.service.PatientService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/patients")
@@ -20,5 +23,24 @@ public class PatientController {
     public PatientResponseDTO addPatient(@Valid @RequestBody PatientRequestDTO request){
         return service.savePatient(request);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<PatientResponseDTO> getPatient(@PathVariable Long id){
+//        System.out.println(id);
+        return ResponseEntity.ok(service.getPatientById(id));
+    }
+    @GetMapping
+    public ResponseEntity<List<PatientResponseDTO>> getAllPatients(){
+        return ResponseEntity.ok(service.getAllPatients());
+    }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<PatientResponseDTO> updatePatient(@PathVariable Long id,@Valid @RequestBody PatientRequestDTO request){
+        return ResponseEntity.ok(service.updatePatient(id,request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePatient(@PathVariable Long id){
+        service.deletePatient(id);
+        return ResponseEntity.noContent().build();
+    }
 }
