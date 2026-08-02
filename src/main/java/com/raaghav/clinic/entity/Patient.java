@@ -3,6 +3,7 @@ package com.raaghav.clinic.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table
@@ -12,6 +13,42 @@ public class Patient {
     private Long id;
     @Column (nullable = false,length = 60)
     private String name;
+
+    @Column(name="date_of_birth")
+    private LocalDate dateOfBirth;
+
+    private String gender;
+
+    @Column(length = 15)
+    private String phone;
+    @Column(length=40,unique = true)
+    private String email;
+
+    private Integer age;
+
+    @Column (length=100)
+    private String address;
+    @Column(length=15,name="emergency_contact")
+    private String emergencyContact;
+
+    @Column(name = "blood_group", length = 3)
+    private String bloodGroup;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Appointment> appointmentList;
+
+    public List<Appointment> getAppointmentList() {
+        return appointmentList;
+    }
+
+    public void setAppointmentList(List<Appointment> appointmentList) {
+        this.appointmentList = appointmentList;
+    }
+
+
+
+    public Patient(){}
+
 
     public Long getId() {
         return id;
@@ -85,15 +122,6 @@ public class Patient {
         this.bloodGroup = bloodGroup;
     }
 
-    @Column(name="date_of_birth")
-    private LocalDate dateOfBirth;
-
-    private String gender;
-
-    @Column(length = 15)
-    private String phone;
-    @Column(length=40,unique = true)
-    private String email;
 
     public Integer getAge() {
         return age;
@@ -102,17 +130,4 @@ public class Patient {
     public void setAge(Integer age) {
         this.age = age;
     }
-
-    private Integer age;
-
-    @Column (length=100)
-    private String address;
-    @Column(length=15,name="emergency_contact")
-    private String emergencyContact;
-
-    @Column(name = "blood_group", length = 3)
-    private String bloodGroup;
-
-    public Patient(){}
-
 }
