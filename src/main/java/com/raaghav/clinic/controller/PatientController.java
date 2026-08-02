@@ -6,6 +6,7 @@ import com.raaghav.clinic.dto.PatientResponseDTO;
 import com.raaghav.clinic.entity.Patient;
 import com.raaghav.clinic.service.PatientService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,8 @@ public class PatientController {
         this.service=service1;
     }
     @PostMapping
-    public PatientResponseDTO addPatient(@Valid @RequestBody PatientRequestDTO request){
-        return service.savePatient(request);
+    public ResponseEntity<PatientResponseDTO> addPatient(@Valid @RequestBody PatientRequestDTO request){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.savePatient(request));
     }
     @GetMapping("/{id}")
     public ResponseEntity<PatientResponseDTO> getPatient(@PathVariable Long id){
