@@ -1,58 +1,41 @@
-package com.raaghav.clinic.entity;
+package com.raaghav.clinic.dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalTime;
-import java.util.List;
 
-@Entity
-public class Doctor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false,length = 60)
+public class DoctorRequestDTO {
+    @NotBlank(message = "Name cannot be blank")
+    @Size(max=60)
     private String name;
 
-    @Column(length=60)
+    @Size(max = 60)
     private String specialization;
 
-    private Integer experience;
+    @Min(value = 0,message = "Experience cannot be negative")
+    private int experience;
 
-    @Column(name = "consultation_fee")
+    @Positive(message = "Consultation fee cannot be negative")
     private Double consultationFee;
 
-    @Column(name = "start_time")
     private LocalTime startTime;
-
-    @Column(name="end_time")
     private LocalTime endTime;
 
-    @Column(length = 15)
+    @NotBlank
+    @Pattern(regexp =  "^[0-9]{10}$",
+            message = "Phone number must contain exactly 10 digits")
     private String phone;
 
-    @OneToMany(mappedBy = "doctor")
-    private List<Appointment> appointmentList;
-
-    public List<Appointment> getAppointmentList() {
-        return appointmentList;
+    public DoctorRequestDTO(String name,String specialization,int experience,Double consultationFee,LocalTime startTime,LocalTime endTime,String phone){
+        this.consultationFee=consultationFee;
+        this.endTime=endTime;
+        this.experience=experience;
+        this.startTime=startTime;
+        this.specialization=specialization;
+        this.name=name;
+        this.phone=phone;
     }
-
-    public void setAppointmentList(List<Appointment> appointmentList) {
-        this.appointmentList = appointmentList;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public DoctorRequestDTO(){}
 
     public String getName() {
         return name;
@@ -70,11 +53,11 @@ public class Doctor {
         this.specialization = specialization;
     }
 
-    public Integer getExperience() {
+    public int getExperience() {
         return experience;
     }
 
-    public void setExperience(Integer experience) {
+    public void setExperience(int experience) {
         this.experience = experience;
     }
 
