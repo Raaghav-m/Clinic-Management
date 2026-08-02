@@ -30,6 +30,19 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
 
+    // Appointment
+    @OneToOne(mappedBy = "appointment")
+    private Consultation consultation;
+
+    public Consultation getConsultation() {
+        return consultation;
+    }
+
+    public void setConsultation(Consultation consultation) {
+        this.consultation = consultation;
+    }
+
+
 
     public Long getId() {
         return id;
