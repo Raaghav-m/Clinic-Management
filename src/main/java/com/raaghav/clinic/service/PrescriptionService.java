@@ -4,6 +4,7 @@ import com.raaghav.clinic.dto.PrescriptionRequestDTO;
 import com.raaghav.clinic.dto.PrescriptionResponseDTO;
 import com.raaghav.clinic.entity.Consultation;
 import com.raaghav.clinic.entity.Prescription;
+import com.raaghav.clinic.exception.ResourceNotFoundException;
 import com.raaghav.clinic.mapper.PrescriptionMapper;
 import com.raaghav.clinic.repository.ConsultationRepository;
 import com.raaghav.clinic.repository.PrescriptionRepository;
@@ -30,7 +31,7 @@ public class PrescriptionService {
 
         Consultation consultation = consultationRepository
                 .findById(dto.getConsultationId())
-                .orElseThrow(() -> new RuntimeException("Consultation not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Consultation not found"));
 
         prescription.setConsultation(consultation);
 
@@ -52,7 +53,7 @@ public class PrescriptionService {
     public PrescriptionResponseDTO getPrescriptionById(Long id) {
 
         Prescription prescription = prescriptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Prescription not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
 
         return PrescriptionMapper.toDTO(prescription);
     }
@@ -62,10 +63,10 @@ public class PrescriptionService {
                                                       PrescriptionRequestDTO dto) {
 
         Prescription prescription = prescriptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Prescription not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
 
         Consultation consultation = consultationRepository.findById(dto.getConsultationId())
-                .orElseThrow(() -> new RuntimeException("Consultation not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Consultation not found"));
 
         prescription.setMedicine(dto.getMedicine());
         prescription.setDosage(dto.getDosage());
@@ -83,7 +84,7 @@ public class PrescriptionService {
     public void deletePrescription(Long id) {
 
         if (!prescriptionRepository.existsById(id)) {
-            throw new RuntimeException("Prescription not found");
+            throw new ResourceNotFoundException("Prescription not found");
         }
 
         prescriptionRepository.deleteById(id);
