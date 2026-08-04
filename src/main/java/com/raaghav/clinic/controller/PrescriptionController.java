@@ -70,4 +70,10 @@ public class PrescriptionController {
 
         return ResponseEntity.ok("Prescription deleted successfully.");
     }
+
+    @GetMapping("/consultation/{consultationId}")
+    public ResponseEntity<PrescriptionResponseDTO> getPrescriptionByConsultationId(@PathVariable Long consultationId){
+        return ResponseEntity.ok().body(prescriptionService.getPrescriptionsByConsultationId(consultationId));
+    }
+
 }

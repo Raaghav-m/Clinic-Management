@@ -97,4 +97,8 @@ public class PrescriptionService {
         patientRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("There is no patient with the given patient id"));
         return prescriptionRepository.findByConsultationAppointmentPatientId(id).stream().map(PrescriptionMapper::toDTO).toList();
     }
+    public PrescriptionResponseDTO getPrescriptionsByConsultationId(Long id){
+        consultationRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("There is no consultation with the given id"));
+        return PrescriptionMapper.toDTO(prescriptionRepository.findByConsultationId(id));
+    }
 }
