@@ -1,7 +1,11 @@
 package com.raaghav.clinic.controller;
 
+import com.raaghav.clinic.dto.AppointmentResponseDTO;
+import com.raaghav.clinic.dto.ConsultationResponseDTO;
 import com.raaghav.clinic.dto.DoctorRequestDTO;
 import com.raaghav.clinic.dto.DoctorResponseDTO;
+import com.raaghav.clinic.entity.Consultation;
+import com.raaghav.clinic.service.ConsultationService;
 import com.raaghav.clinic.service.DoctorService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,7 @@ public class DoctorController {
     private final DoctorService service;
     public DoctorController(DoctorService service){
         this.service=service;
+
     }
 
     @PostMapping
@@ -40,5 +45,20 @@ public class DoctorController {
         service.deleteDoctor(id);
         return ResponseEntity.noContent().build();
     }
-
+    @GetMapping("/search/name")
+    public ResponseEntity<List<DoctorResponseDTO>> findDoctorByName(@RequestParam String name){
+        return ResponseEntity.ok().body(service.getDoctorByName(name));
+    }
+    @GetMapping("/search/specialization")
+    public ResponseEntity<List<DoctorResponseDTO>> findDoctorBySpecialization(@RequestParam String specialization){
+        return ResponseEntity.ok().body(service.getDoctorBySpecialization(specialization));
+    }
+    @GetMapping("/{id}/consultations")
+    public ResponseEntity<List<ConsultationResponseDTO>> findDoctorConsultations(@PathVariable Long id){
+        return ResponseEntity.ok().body(service.getDoctorConsultations(id));
+    }
+    @GetMapping("/{id}/appointments")
+    public ResponseEntity<List<AppointmentResponseDTO>> findDoctorAppointments(@PathVariable Long id){
+        return ResponseEntity.ok().body(service.getDoctorAppointments(id));
+    }
 }
