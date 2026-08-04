@@ -78,8 +78,8 @@ public class PatientService {
         patientSummaryResponseDTO.setUpcomingAppointments(appointmentRepository.countByPatientIdAndStatus(id, Appointment.AppointmentStatus.BOOKED));
         patientSummaryResponseDTO.setTotalConsultations(consultationRepository.countByAppointmentPatientId(id));
         patientSummaryResponseDTO.setTotalPrescriptions(prescriptionRepository.countByConsultationAppointmentPatientId(id));
-        patientSummaryResponseDTO.setLastAppointmentDate(appointmentRepository.findFirstByPatientIdOrderByAppointmentTimeDesc(id, LocalDateTime.now()));
-        patientSummaryResponseDTO.setLastConsultationDate(consultationRepository.findFirstByAppointmentPatientIdOrderByAppointmentAppointmentTimeDesc(id));
+        patientSummaryResponseDTO.setLastAppointmentDate(appointmentRepository.findFirstByPatientIdOrderByAppointmentTimeDesc(id, LocalDateTime.now()).getAppointmentTime());
+        patientSummaryResponseDTO.setLastConsultationDate(consultationRepository.findFirstByAppointmentPatientIdOrderByAppointmentAppointmentTimeDesc(id).getAppointment().getAppointmentTime());
         return patientSummaryResponseDTO;
 
     }

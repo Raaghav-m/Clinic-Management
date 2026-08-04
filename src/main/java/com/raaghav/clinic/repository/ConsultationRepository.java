@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface ConsultationRepository extends JpaRepository<Consultation,Long> {
     List<Consultation> findByAppointmentPatientId(Long id);
     Integer countByAppointmentPatientId(Long id);
-    LocalDateTime findFirstByAppointmentPatientIdOrderByAppointmentAppointmentTimeDesc(Long id);
+    Consultation findFirstByAppointmentPatientIdOrderByAppointmentAppointmentTimeDesc(Long id);
 }
