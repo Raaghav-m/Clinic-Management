@@ -57,6 +57,9 @@ public class AppointmentService {
         appointmentRepository.delete(appointment);
 
     }
-
+    public List<AppointmentResponseDTO> getByPatientId(Long id){
+        patientRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("The given Patient id is not found"));
+        return appointmentRepository.findByPatientId(id).stream().map(AppointmentMapper::toResponse).toList();
+    }
 
 }

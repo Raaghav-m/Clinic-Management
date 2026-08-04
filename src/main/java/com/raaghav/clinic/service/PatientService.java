@@ -45,4 +45,8 @@ public class PatientService {
     public List<PatientResponseDTO> getPatientsByName(String searchString){
         return patientRepository.findByNameContainingIgnoreCase(searchString).stream().map(PatientMapper::toResponse).toList();
     }
+
+    public List<PatientResponseDTO> getPatientByPhone(String phone){
+        return patientRepository.findByPhoneContaining(phone).stream().map(PatientMapper::toResponse).toList();
+    }
 }

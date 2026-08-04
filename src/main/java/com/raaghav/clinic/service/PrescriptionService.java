@@ -7,6 +7,7 @@ import com.raaghav.clinic.entity.Prescription;
 import com.raaghav.clinic.exception.ResourceNotFoundException;
 import com.raaghav.clinic.mapper.PrescriptionMapper;
 import com.raaghav.clinic.repository.ConsultationRepository;
+import com.raaghav.clinic.repository.PatientRepository;
 import com.raaghav.clinic.repository.PrescriptionRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +18,13 @@ public class PrescriptionService {
 
     private final PrescriptionRepository prescriptionRepository;
     private final ConsultationRepository consultationRepository;
+    private final PatientRepository patientRepository;
 
     public PrescriptionService(PrescriptionRepository prescriptionRepository,
-                               ConsultationRepository consultationRepository) {
+                               ConsultationRepository consultationRepository,PatientRepository patientRepository) {
         this.prescriptionRepository = prescriptionRepository;
         this.consultationRepository = consultationRepository;
+        this.patientRepository=patientRepository;
     }
 
     // Create
@@ -88,5 +91,10 @@ public class PrescriptionService {
         }
 
         prescriptionRepository.deleteById(id);
+    }
+
+    public List<PrescriptionResponseDTO> getPrescriptionsByPatientId(Long id){
+        patientRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("There is no patient with the given patient id"));
+        return prescriptionRepository.findByConsultationAppointmentPatientId(id).stream().map(PrescriptionMapper::toDTO).toList();
     }
 }

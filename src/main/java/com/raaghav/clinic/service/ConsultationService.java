@@ -5,10 +5,12 @@ import com.raaghav.clinic.dto.ConsultationRequestDTO;
 import com.raaghav.clinic.dto.ConsultationResponseDTO;
 import com.raaghav.clinic.entity.Appointment;
 import com.raaghav.clinic.entity.Consultation;
+import com.raaghav.clinic.entity.Patient;
 import com.raaghav.clinic.exception.ResourceNotFoundException;
 import com.raaghav.clinic.mapper.ConsultationMapper;
 import com.raaghav.clinic.repository.AppointmentRepository;
 import com.raaghav.clinic.repository.ConsultationRepository;
+import com.raaghav.clinic.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +19,11 @@ import java.util.List;
 public class ConsultationService {
     private final ConsultationRepository consultationRepository;
     private final AppointmentRepository appointmentRepository;
-    public ConsultationService(ConsultationRepository consultationRepository, AppointmentRepository appointmentRepository){
+    private final PatientRepository patientRepository;
+    public ConsultationService(ConsultationRepository consultationRepository, AppointmentRepository appointmentRepository, PatientRepository patientRepository){
         this.consultationRepository=consultationRepository;
         this.appointmentRepository=appointmentRepository;
+        this.patientRepository=patientRepository;
     }
     public ConsultationResponseDTO createConsultation(ConsultationRequestDTO request){
         Appointment appointment=appointmentRepository.findById(request.getAppointmentId()).orElseThrow(()->new ResourceNotFoundException("Appointment with given appointment id is not found"));
@@ -51,6 +55,11 @@ public class ConsultationService {
         appointment.setConsultation(null);
 
         consultationRepository.delete(consultation);
+    }
+
+    public List<ConsultationResponseDTO> getConsultationsByPatientId(Long id){
+        patientRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("The patient is not found with the given id"));
+        return consultationRepository.findByAppointmentPatientId(id).stream().map(ConsultationMapper::toResponse).toList();
     }
 
 

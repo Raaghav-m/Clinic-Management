@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/prescriptions")
 public class PrescriptionController {
 
-    private final PrescriptionService prescriptionService;
+    private final com.raaghav.clinic.service.PrescriptionService prescriptionService;
 
     public PrescriptionController(PrescriptionService prescriptionService) {
         this.prescriptionService = prescriptionService;
@@ -63,11 +63,11 @@ public class PrescriptionController {
 
     // Delete Prescription
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePrescription(
+    public ResponseEntity<String> deletePrescription(
             @PathVariable Long id) {
 
         prescriptionService.deletePrescription(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Prescription deleted successfully.");
     }
 }
