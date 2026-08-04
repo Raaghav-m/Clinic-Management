@@ -1,12 +1,16 @@
 package com.raaghav.clinic.controller;
 
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import com.raaghav.clinic.dto.AppointmentRequestDTO;
 import com.raaghav.clinic.dto.AppointmentResponseDTO;
+import com.raaghav.clinic.entity.Appointment;
 import com.raaghav.clinic.service.AppointmentService;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,6 +40,30 @@ public class AppointmentController {
     public ResponseEntity<Void> deleteAppointment(@PathVariable Long id){
         appointmentService.deleteAppointment(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<AppointmentResponseDTO>> getAppointmentByStatus(@PathVariable Appointment.AppointmentStatus status){
+        return ResponseEntity.ok().body(appointmentService.getByAppointmentStatus(status));
+    }
+    @GetMapping("/date/{date}")
+    public ResponseEntity<List<AppointmentResponseDTO>> getAppointmentByDate(@PathVariable
+                                                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                                                 LocalDateTime date){
+        return ResponseEntity.ok().body(appointmentService.getByAppointmentDate(date));
+    }
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<AppointmentResponseDTO>> getUpcomingAppointment(){
+        return ResponseEntity.ok().body(appointmentService.getByAppointmentUpcoming(Appointment.AppointmentStatus.BOOKED));
+    }
+
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<AppointmentResponseDTO> cancelAppointment(@PathVariable Long id){
+        return ResponseEntity.ok().body(appointmentService.cancelAppointment(id));
+    }
+    @PatchMapping("/{id}/completed")
+    public ResponseEntity<AppointmentResponseDTO> completeAppointment(@PathVariable Long id){
+        return ResponseEntity.ok().body(appointmentService.completeAppointment(id));
+
     }
 
 }

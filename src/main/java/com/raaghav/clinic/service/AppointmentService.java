@@ -13,6 +13,7 @@ import com.raaghav.clinic.repository.DoctorRepository;
 import com.raaghav.clinic.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -61,5 +62,34 @@ public class AppointmentService {
         patientRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("The given Patient id is not found"));
         return appointmentRepository.findByPatientId(id).stream().map(AppointmentMapper::toResponse).toList();
     }
+    public List<AppointmentResponseDTO> getByAppointmentStatus(Appointment.AppointmentStatus status){
+        return appointmentRepository.findByStatus(status).stream().map(AppointmentMapper::toResponse).toList();
+    }
+    public List<AppointmentResponseDTO> getByAppointmentDate(LocalDateTime time){
+        return appointmentRepository.findByAppointmentTime(time).stream().map(AppointmentMapper::toResponse).toList();
+    }
+    public List<AppointmentResponseDTO> getByAppointmentUpcoming(Appointment.AppointmentStatus status){
+        return appointmentRepository.findByStatusOrderByAppointmentTimeAsc(status).stream().map(AppointmentMapper::toResponse).toList();
+
+    }
+    public AppointmentResponseDTO cancelAppointment(Long id){
+        Appointment appointment=appointmentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("the given Patient id is not found"));
+        if(appointment.getStatus()== Appointment.AppointmentStatus.COMPLETED){
+            throw new IllegalStateException("This operation cant be performed on a completed Appointment");
+        }
+        appointment.setStatus(Appointment.AppointmentStatus.CANCELLED);
+        Appointment savedAppointment=appointmentRepository.save(appointment);
+        return AppointmentMapper.toResponse(savedAppointment);
+    }
+    public AppointmentResponseDTO completeAppointment(Long id){
+        Appointment appointment=appointmentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("the given Patient id is not found"));
+        if(appointment.getStatus()== Appointment.AppointmentStatus.CANCELLED){
+            throw new IllegalStateException("This operation cant be performed on a cancelled Appointment");
+        }
+        appointment.setStatus(Appointment.AppointmentStatus.COMPLETED);
+        Appointment savedAppointment=appointmentRepository.save(appointment);
+        return AppointmentMapper.toResponse(savedAppointment);
+    }
+
 
 }
