@@ -14,9 +14,6 @@ public class Patient {
     @Column (nullable = false,length = 60)
     private String name;
 
-    @Column(name="date_of_birth")
-    private LocalDate dateOfBirth;
-
     private String gender;
 
     @Column(length = 15)
@@ -66,13 +63,6 @@ public class Patient {
         this.name = name;
     }
 
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
 
     public String getGender() {
         return gender;

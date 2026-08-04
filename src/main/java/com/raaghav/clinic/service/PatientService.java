@@ -2,20 +2,35 @@ package com.raaghav.clinic.service;
 
 import com.raaghav.clinic.dto.PatientRequestDTO;
 import com.raaghav.clinic.dto.PatientResponseDTO;
+import com.raaghav.clinic.dto.PatientSummaryResponseDTO;
+import com.raaghav.clinic.entity.Appointment;
 import com.raaghav.clinic.entity.Patient;
+import com.raaghav.clinic.entity.Prescription;
 import com.raaghav.clinic.exception.ResourceNotFoundException;
 import com.raaghav.clinic.mapper.PatientMapper;
+import com.raaghav.clinic.repository.AppointmentRepository;
+import com.raaghav.clinic.repository.ConsultationRepository;
 import com.raaghav.clinic.repository.PatientRepository;
+import com.raaghav.clinic.repository.PrescriptionRepository;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class PatientService {
     private final PatientRepository patientRepository;
-    public PatientService(PatientRepository patientRepository1){
-        this.patientRepository=patientRepository1;
-        System.out.println("hello there");
+    private final AppointmentRepository appointmentRepository;
+    private final ConsultationRepository consultationRepository;
+    private final PrescriptionRepository prescriptionRepository;
+
+    public PatientService(PatientRepository patientRepository, ConsultationRepository consultationRepository, PrescriptionRepository prescriptionRepository,AppointmentRepository appointmentRepository){
+        this.patientRepository=patientRepository;
+        this.consultationRepository=consultationRepository;
+        this.prescriptionRepository=prescriptionRepository;
+        this.appointmentRepository=appointmentRepository;
     }
     public PatientResponseDTO savePatient(PatientRequestDTO request){
         Patient patient= PatientMapper.toEntity(request);
@@ -48,5 +63,24 @@ public class PatientService {
 
     public List<PatientResponseDTO> getPatientByPhone(String phone){
         return patientRepository.findByPhoneContaining(phone).stream().map(PatientMapper::toResponse).toList();
+    }
+    public PatientSummaryResponseDTO getPatientSummary(Long id){
+        PatientSummaryResponseDTO patientSummaryResponseDTO=new PatientSummaryResponseDTO();
+        Patient patient=patientRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("the patient with the given id is not found"));
+
+        patientSummaryResponseDTO.setId(id);
+        patientSummaryResponseDTO.setAge(patient.getAge());
+        patientSummaryResponseDTO.setPatientName(patient.getName());
+        patientSummaryResponseDTO.setPhone(patient.getPhone());
+        patientSummaryResponseDTO.setTotalAppointments(appointmentRepository.countByPatientId(id));
+        patientSummaryResponseDTO.setCompletedAppointments(appointmentRepository.countByPatientIdAndStatus(id, Appointment.AppointmentStatus.COMPLETED));
+        patientSummaryResponseDTO.setCancelledAppointments(appointmentRepository.countByPatientIdAndStatus(id, Appointment.AppointmentStatus.CANCELLED));
+        patientSummaryResponseDTO.setUpcomingAppointments(appointmentRepository.countByPatientIdAndStatus(id, Appointment.AppointmentStatus.BOOKED));
+        patientSummaryResponseDTO.setTotalConsultations(consultationRepository.countByAppointmentPatientId(id));
+        patientSummaryResponseDTO.setTotalPrescriptions(prescriptionRepository.countByConsultationAppointmentPatientId(id));
+        patientSummaryResponseDTO.setLastAppointmentDate(appointmentRepository.findFirstByPatientIdOrderByAppointmentTimeDesc(id, LocalDateTime.now()));
+        patientSummaryResponseDTO.setLastConsultationDate(consultationRepository.findFirstByAppointmentPatientIdOrderByAppointmentAppointmentTimeDesc(id));
+        return patientSummaryResponseDTO;
+
     }
 }

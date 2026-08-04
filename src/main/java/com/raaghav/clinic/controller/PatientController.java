@@ -76,5 +76,9 @@ public class PatientController {
     public ResponseEntity<List<PrescriptionResponseDTO>> getPatientPrescriptions(@PathVariable Long id){
         return ResponseEntity.ok(prescriptionService.getPrescriptionsByPatientId(id));
     }
+    @GetMapping("/{id}/summary")
+    public ResponseEntity<PatientSummaryResponseDTO> getPatientSummary(@PathVariable Long id){
+        return ResponseEntity.ok(service.getPatientSummary(id));
+    }
 
 }
