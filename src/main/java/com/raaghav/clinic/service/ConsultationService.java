@@ -61,6 +61,12 @@ public class ConsultationService {
         patientRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("The patient is not found with the given id"));
         return consultationRepository.findByAppointmentPatientId(id).stream().map(ConsultationMapper::toResponse).toList();
     }
-
+    public ConsultationResponseDTO getConsultationByAppointmentId(Long id){
+        appointmentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("The appointment with the given id is not found"));
+        return ConsultationMapper.toResponse(consultationRepository.findByAppointmentId(id));
+    }
+    public List<ConsultationResponseDTO> getConsultationByDiagnosis(String diagnosis){
+        return consultationRepository.findByDiagnosisContainingIgnoreCase(diagnosis).stream().map(ConsultationMapper::toResponse).toList();
+    }
 
 }

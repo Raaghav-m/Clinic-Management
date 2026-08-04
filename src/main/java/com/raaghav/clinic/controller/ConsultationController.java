@@ -39,6 +39,14 @@ public class ConsultationController {
         service.deleteConsultation(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/appointment/{appointmentId}")
+    public ResponseEntity<ConsultationResponseDTO> getConsultationByAppointmentId(@PathVariable Long appointmentId){
+        return ResponseEntity.ok().body(service.getConsultationByAppointmentId(appointmentId));
+    }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ConsultationResponseDTO>> getConsultationByDiagnosis(@RequestParam String diagnosis){
+        return ResponseEntity.ok().body(service.getConsultationByDiagnosis(diagnosis));
+    }
 
 }

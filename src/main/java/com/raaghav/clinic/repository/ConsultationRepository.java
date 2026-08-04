@@ -13,4 +13,6 @@ public interface ConsultationRepository extends JpaRepository<Consultation,Long>
     Integer countByAppointmentPatientId(Long id);
     Consultation findFirstByAppointmentPatientIdOrderByAppointmentAppointmentTimeDesc(Long id);
     List<Consultation> findByAppointmentDoctorId(Long id);
+    Consultation findByAppointmentId(Long id);
+    List<Consultation> findByDiagnosisContainingIgnoreCase(String name);
 }
