@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,69 +14,85 @@ import java.time.LocalTime;
 @Configuration
 public class DataSeeder {
 
+    public static final String DEFAULT_PASSWORD = "Password@123";
+
     @Bean
     @Profile("seed")
     CommandLineRunner seedDatabase(
+            UserRepository userRepository,
             PatientRepository patientRepository,
             DoctorRepository doctorRepository,
             AppointmentRepository appointmentRepository,
             ConsultationRepository consultationRepository,
-            PrescriptionRepository prescriptionRepository) {
+            PrescriptionRepository prescriptionRepository,
+            PasswordEncoder passwordEncoder) {
 
         return args -> {
-            if (patientRepository.count() > 0) {
+            if (userRepository.count() > 0) {
                 return;
             }
 
-            var patients = patientRepository.saveAll(java.util.List.of(
-                    patient("Priya Sharma", "Female", "9876543210", "priya.sharma@gmail.com",
-                            "14 MG Road, Koramangala, Bangalore", "9123456780", "O+"),
-                    patient("Arjun Mehta", "Male", "9823456710", "arjun.mehta@yahoo.com",
-                            "22 Park Street, Kolkata", "9834567890", "A+"),
-                    patient("Lakshmi Iyer", "Female", "9845678901", "lakshmi.iyer@outlook.com",
-                            "8 Anna Salai, T Nagar, Chennai", "9856789012", "B+"),
-                    patient("Rahul Kapoor", "Male", "9867890123", "rahul.kapoor@gmail.com",
-                            "5 Bandra West, Mumbai", "9878901234", "AB+"),
-                    patient("Sneha Patel", "Female", "9889012345", "sneha.patel@hotmail.com",
-                            "19 SG Highway, Ahmedabad", "9890123456", "O+"),
-                    patient("Mohammed Farhan", "Male", "9901234567", "farhan.khan@gmail.com",
-                            "3 Banjara Hills, Hyderabad", "9912345678", "A+"),
-                    patient("Divya Nair", "Female", "9923456789", "divya.nair@gmail.com",
-                            "11 Marine Drive, Kochi", "9934567890", "B+"),
-                    patient("Karthik Venkatesh", "Male", "9945678901", "karthik.v@icloud.com",
-                            "7 HSR Layout, Bangalore", "9956789012", "O+")
+            String encodedPassword = passwordEncoder.encode(DEFAULT_PASSWORD);
+
+            // 1 admin
+            userRepository.save(user("Clinic Admin", "admin@clinic.com", "9000000001",
+                    Role.ADMIN, encodedPassword));
+
+            // 2 receptionists
+            userRepository.saveAll(java.util.List.of(
+                    user("Anita Reception", "receptionist1@clinic.com", "9000000002",
+                            Role.RECEPTIONIST, encodedPassword),
+                    user("Ravi FrontDesk", "receptionist2@clinic.com", "9000000003",
+                            Role.RECEPTIONIST, encodedPassword)
             ));
 
+            // 6 patients
+            var patients = patientRepository.saveAll(java.util.List.of(
+                    patient("Priya Sharma", "Female", "9876543210", "priya.sharma@gmail.com",
+                            "14 MG Road, Koramangala, Bangalore", "9123456780", "O+", encodedPassword),
+                    patient("Arjun Mehta", "Male", "9823456710", "arjun.mehta@yahoo.com",
+                            "22 Park Street, Kolkata", "9834567890", "A+", encodedPassword),
+                    patient("Lakshmi Iyer", "Female", "9845678901", "lakshmi.iyer@outlook.com",
+                            "8 Anna Salai, T Nagar, Chennai", "9856789012", "B+", encodedPassword),
+                    patient("Rahul Kapoor", "Male", "9867890123", "rahul.kapoor@gmail.com",
+                            "5 Bandra West, Mumbai", "9878901234", "AB+", encodedPassword),
+                    patient("Sneha Patel", "Female", "9889012345", "sneha.patel@hotmail.com",
+                            "19 SG Highway, Ahmedabad", "9890123456", "O+", encodedPassword),
+                    patient("Mohammed Farhan", "Male", "9901234567", "farhan.khan@gmail.com",
+                            "3 Banjara Hills, Hyderabad", "9912345678", "A+", encodedPassword)
+            ));
+
+            // 5 doctors
             var doctors = doctorRepository.saveAll(java.util.List.of(
-                    doctor("Dr. Ananya Reddy", "Cardiology", 15, 1500.0, "09:00", "17:00", "9876000001",
-                            "ananya.reddy@clinic.com"),
-                    doctor("Dr. Vikram Singh", "Orthopedics", 12, 1200.0, "10:00", "18:00", "9876000002",
-                            "vikram.singh@clinic.com"),
-                    doctor("Dr. Meera Joshi", "Dermatology", 8, 800.0, "09:30", "16:30", "9876000003",
-                            "meera.joshi@clinic.com"),
-                    doctor("Dr. Rajesh Kumar", "General Medicine", 20, 600.0, "08:00", "20:00", "9876000004",
-                            "rajesh.kumar@clinic.com"),
-                    doctor("Dr. Sunita Rao", "Pediatrics", 10, 900.0, "09:00", "15:00", "9876000005",
-                            "sunita.rao@clinic.com"),
-                    doctor("Dr. Amit Desai", "Neurology", 18, 2000.0, "11:00", "19:00", "9876000006",
-                            "amit.desai@clinic.com"),
-                    doctor("Dr. Kavitha Menon", "Gynecology", 14, 1100.0, "10:00", "17:00", "9876000007",
-                            "kavitha.menon@clinic.com"),
-                    doctor("Dr. Suresh Pillai", "ENT", 11, 750.0, "09:00", "16:00", "9876000008",
-                            "suresh.pillai@clinic.com")
+                    doctor("Dr. Ananya Reddy", "Cardiology", 15, 1500.0, "09:00", "17:00",
+                            "9876000001", "ananya.reddy@clinic.com", encodedPassword),
+                    doctor("Dr. Vikram Singh", "Orthopedics", 12, 1200.0, "10:00", "18:00",
+                            "9876000002", "vikram.singh@clinic.com", encodedPassword),
+                    doctor("Dr. Meera Joshi", "Dermatology", 8, 800.0, "09:30", "16:30",
+                            "9876000003", "meera.joshi@clinic.com", encodedPassword),
+                    doctor("Dr. Rajesh Kumar", "General Medicine", 20, 600.0, "08:00", "20:00",
+                            "9876000004", "rajesh.kumar@clinic.com", encodedPassword),
+                    doctor("Dr. Sunita Rao", "Pediatrics", 10, 900.0, "09:00", "15:00",
+                            "9876000005", "sunita.rao@clinic.com", encodedPassword)
             ));
 
             var appointments = appointmentRepository.saveAll(java.util.List.of(
-                    appointment(patients.get(0), doctors.get(0), "2026-07-15T10:00", Appointment.AppointmentStatus.COMPLETED),
-                    appointment(patients.get(1), doctors.get(1), "2026-07-18T11:30", Appointment.AppointmentStatus.COMPLETED),
-                    appointment(patients.get(2), doctors.get(2), "2026-07-20T14:00", Appointment.AppointmentStatus.COMPLETED),
-                    appointment(patients.get(3), doctors.get(3), "2026-07-22T09:00", Appointment.AppointmentStatus.COMPLETED),
-                    appointment(patients.get(4), doctors.get(4), "2026-07-25T10:30", Appointment.AppointmentStatus.COMPLETED),
-                    appointment(patients.get(5), doctors.get(5), "2026-07-28T15:00", Appointment.AppointmentStatus.COMPLETED),
-                    appointment(patients.get(6), doctors.get(6), "2026-07-30T11:00", Appointment.AppointmentStatus.COMPLETED),
-                    appointment(patients.get(7), doctors.get(7), "2026-08-01T09:30", Appointment.AppointmentStatus.COMPLETED),
-                    appointment(patients.get(0), doctors.get(3), "2026-08-10T16:00", Appointment.AppointmentStatus.BOOKED),
-                    appointment(patients.get(1), doctors.get(0), "2026-08-12T10:00", Appointment.AppointmentStatus.CANCELLED)
+                    appointment(patients.get(0), doctors.get(0), "2026-07-15T10:00",
+                            Appointment.AppointmentStatus.COMPLETED),
+                    appointment(patients.get(1), doctors.get(1), "2026-07-18T11:30",
+                            Appointment.AppointmentStatus.COMPLETED),
+                    appointment(patients.get(2), doctors.get(2), "2026-07-20T14:00",
+                            Appointment.AppointmentStatus.COMPLETED),
+                    appointment(patients.get(3), doctors.get(3), "2026-07-22T09:00",
+                            Appointment.AppointmentStatus.COMPLETED),
+                    appointment(patients.get(4), doctors.get(4), "2026-07-25T10:30",
+                            Appointment.AppointmentStatus.COMPLETED),
+                    appointment(patients.get(5), doctors.get(0), "2026-07-28T15:00",
+                            Appointment.AppointmentStatus.COMPLETED),
+                    appointment(patients.get(0), doctors.get(3), "2026-08-10T16:00",
+                            Appointment.AppointmentStatus.BOOKED),
+                    appointment(patients.get(1), doctors.get(0), "2026-08-12T10:00",
+                            Appointment.AppointmentStatus.CANCELLED)
             ));
 
             var consultations = consultationRepository.saveAll(java.util.List.of(
@@ -96,13 +113,7 @@ public class DataSeeder {
                             "Parent counselled on steam inhalation. No antibiotics needed currently."),
                     consultation(appointments.get(5), "Recurrent headaches, blurred vision episodes",
                             "Tension-type headache, rule out migraine",
-                            "MRI scheduled. Maintain sleep diary and reduce screen time."),
-                    consultation(appointments.get(6), "Irregular periods, pelvic discomfort",
-                            "Polycystic ovary syndrome (PCOS)",
-                            "Ultrasound confirms ovarian cysts. Diet and exercise plan discussed."),
-                    consultation(appointments.get(7), "Ear pain, blocked nose, reduced hearing",
-                            "Acute otitis media, bilateral sinus congestion",
-                            "Steam inhalation twice daily. Follow-up ENT check in 10 days.")
+                            "MRI scheduled. Maintain sleep diary and reduce screen time.")
             ));
 
             prescriptionRepository.saveAll(java.util.List.of(
@@ -122,30 +133,35 @@ public class DataSeeder {
                             "Use spacer with inhaler. Seek care if breathing worsens."),
                     prescription(consultations.get(5), "Propranolol 40mg + Sumatriptan 50mg",
                             "1 tab Propranolol daily, Sumatriptan PRN", "Daily + at headache onset", "30 days",
-                            "Avoid triggers: stress, skipped meals. Do not exceed 2 Sumatriptan/day."),
-                    prescription(consultations.get(6), "Metformin 500mg + Myo-inositol 2g",
-                            "1 tablet + 1 sachet", "Twice daily with meals", "90 days",
-                            "Track menstrual cycle. Weight loss target: 5 kg in 3 months."),
-                    prescription(consultations.get(7), "Amoxicillin 500mg + Xylometazoline nasal drops",
-                            "1 capsule + 2 drops per nostril", "Capsule thrice daily, drops twice daily", "7 days",
-                            "Complete antibiotic course. Do not use nasal drops beyond 5 days.")
+                            "Avoid triggers: stress, skipped meals. Do not exceed 2 Sumatriptan/day.")
             ));
+
+            System.out.println("========== SEED CREDENTIALS ==========");
+            System.out.println("Password for ALL users: " + DEFAULT_PASSWORD);
+            System.out.println("Admin:          admin@clinic.com");
+            System.out.println("Receptionist 1: receptionist1@clinic.com");
+            System.out.println("Receptionist 2: receptionist2@clinic.com");
+            System.out.println("Doctor:         ananya.reddy@clinic.com");
+            System.out.println("Patient:        priya.sharma@gmail.com");
+            System.out.println("======================================");
         };
     }
 
-    private static User user(String name, String email, String phone, Role role) {
+    private static User user(String name, String email, String phone, Role role, String encodedPassword) {
         var user = new User();
         user.setName(name);
         user.setEmail(email);
         user.setPhone(phone);
         user.setRole(role);
+        user.setPassword(encodedPassword);
         return user;
     }
 
     private static Patient patient(String name, String gender, String phone, String email,
-                                   String address, String emergencyContact, String bloodGroup) {
+                                   String address, String emergencyContact, String bloodGroup,
+                                   String encodedPassword) {
         var p = new Patient();
-        p.setUser(user(name, email, phone, Role.PATIENT));
+        p.setUser(user(name, email, phone, Role.PATIENT, encodedPassword));
         p.setGender(gender);
         p.setAddress(address);
         p.setEmergencyContact(emergencyContact);
@@ -154,9 +170,10 @@ public class DataSeeder {
     }
 
     private static Doctor doctor(String name, String specialization, int experience, double fee,
-                                 String start, String end, String phone, String email) {
+                                 String start, String end, String phone, String email,
+                                 String encodedPassword) {
         var d = new Doctor();
-        d.setUser(user(name, email, phone, Role.DOCTOR));
+        d.setUser(user(name, email, phone, Role.DOCTOR, encodedPassword));
         d.setSpecialization(specialization);
         d.setExperience(experience);
         d.setConsultationFee(fee);
