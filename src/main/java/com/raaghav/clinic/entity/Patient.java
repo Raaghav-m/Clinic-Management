@@ -28,7 +28,7 @@ public class Patient {
     @Column(length = 500)
     private String medicalHistory;
 
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
 
