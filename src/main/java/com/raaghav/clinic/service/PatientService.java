@@ -5,12 +5,14 @@ import com.raaghav.clinic.dto.PatientResponseDTO;
 import com.raaghav.clinic.dto.PatientSummaryResponseDTO;
 import com.raaghav.clinic.entity.Appointment;
 import com.raaghav.clinic.entity.Patient;
+import com.raaghav.clinic.entity.User;
 import com.raaghav.clinic.exception.ResourceNotFoundException;
 import com.raaghav.clinic.mapper.PatientMapper;
 import com.raaghav.clinic.repository.AppointmentRepository;
 import com.raaghav.clinic.repository.ConsultationRepository;
 import com.raaghav.clinic.repository.PatientRepository;
 import com.raaghav.clinic.repository.PrescriptionRepository;
+import com.raaghav.clinic.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,13 +21,16 @@ import java.util.List;
 @Service
 public class PatientService {
     private final PatientRepository patientRepository;
+    private final UserRepository userRepository;
     private final AppointmentRepository appointmentRepository;
     private final ConsultationRepository consultationRepository;
     private final PrescriptionRepository prescriptionRepository;
 
-    public PatientService(PatientRepository patientRepository, ConsultationRepository consultationRepository,
+    public PatientService(PatientRepository patientRepository, UserRepository userRepository,
+                          ConsultationRepository consultationRepository,
                           PrescriptionRepository prescriptionRepository, AppointmentRepository appointmentRepository) {
         this.patientRepository = patientRepository;
+        this.userRepository = userRepository;
         this.consultationRepository = consultationRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.appointmentRepository = appointmentRepository;
@@ -62,12 +67,13 @@ public class PatientService {
     }
 
     public List<PatientResponseDTO> getPatientsByName(String searchString) {
-        return patientRepository.findByNameContainingIgnoreCase(searchString).stream()
-                .map(PatientMapper::toResponse).toList();
+        List<User> users = userRepository.findByNameContainingIgnoreCase(searchString);
+        return patientRepository.findByUserIn(users).stream().map(PatientMapper::toResponse).toList();
     }
 
     public List<PatientResponseDTO> getPatientByPhone(String phone) {
-        return patientRepository.findByPhoneContaining(phone).stream().map(PatientMapper::toResponse).toList();
+        List<User> users = userRepository.findByPhoneContaining(phone);
+        return patientRepository.findByUserIn(users).stream().map(PatientMapper::toResponse).toList();
     }
 
     public PatientSummaryResponseDTO getPatientSummary(Long id) {

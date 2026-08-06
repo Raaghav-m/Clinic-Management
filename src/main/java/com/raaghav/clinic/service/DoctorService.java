@@ -5,6 +5,7 @@ import com.raaghav.clinic.dto.ConsultationResponseDTO;
 import com.raaghav.clinic.dto.DoctorRequestDTO;
 import com.raaghav.clinic.dto.DoctorResponseDTO;
 import com.raaghav.clinic.entity.Doctor;
+import com.raaghav.clinic.entity.User;
 import com.raaghav.clinic.exception.ResourceNotFoundException;
 import com.raaghav.clinic.mapper.AppointmentMapper;
 import com.raaghav.clinic.mapper.ConsultationMapper;
@@ -12,6 +13,7 @@ import com.raaghav.clinic.mapper.DoctorMapper;
 import com.raaghav.clinic.repository.AppointmentRepository;
 import com.raaghav.clinic.repository.ConsultationRepository;
 import com.raaghav.clinic.repository.DoctorRepository;
+import com.raaghav.clinic.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,12 +21,15 @@ import java.util.List;
 @Service
 public class DoctorService {
     private final DoctorRepository doctorRepository;
+    private final UserRepository userRepository;
     private final AppointmentRepository appointmentRepository;
     private final ConsultationRepository consultationRepository;
 
-    public DoctorService(DoctorRepository doctorRepository, AppointmentRepository appointmentRepository,
+    public DoctorService(DoctorRepository doctorRepository, UserRepository userRepository,
+                         AppointmentRepository appointmentRepository,
                          ConsultationRepository consultationRepository) {
         this.doctorRepository = doctorRepository;
+        this.userRepository = userRepository;
         this.appointmentRepository = appointmentRepository;
         this.consultationRepository = consultationRepository;
     }
@@ -60,7 +65,8 @@ public class DoctorService {
     }
 
     public List<DoctorResponseDTO> getDoctorByName(String name) {
-        return doctorRepository.findByNameContainingIgnoreCase(name).stream().map(DoctorMapper::toResponse).toList();
+        List<User> users = userRepository.findByNameContainingIgnoreCase(name);
+        return doctorRepository.findByUserIn(users).stream().map(DoctorMapper::toResponse).toList();
     }
 
     public List<DoctorResponseDTO> getDoctorBySpecialization(String name) {
