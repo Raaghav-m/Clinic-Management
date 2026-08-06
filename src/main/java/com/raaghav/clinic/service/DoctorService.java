@@ -30,9 +30,6 @@ public class DoctorService {
     }
 
     public DoctorResponseDTO addDoctor(DoctorRequestDTO doctorRequestDTO) {
-        if (doctorRequestDTO.getPassword() == null || doctorRequestDTO.getPassword().isBlank()) {
-            throw new IllegalArgumentException("Password is required when creating a doctor");
-        }
         Doctor newDoctor = DoctorMapper.toEntity(doctorRequestDTO);
         Doctor savedDoctor = doctorRepository.save(newDoctor);
         return DoctorMapper.toResponse(savedDoctor);

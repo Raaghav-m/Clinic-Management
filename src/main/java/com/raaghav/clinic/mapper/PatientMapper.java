@@ -12,7 +12,6 @@ public class PatientMapper {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
-        user.setPassword(request.getPassword());
         user.setRole(Role.PATIENT);
 
         Patient patient = new Patient();
@@ -27,9 +26,6 @@ public class PatientMapper {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
-        if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            user.setPassword(request.getPassword());
-        }
         patient.setAge(request.getAge());
         patient.setGender(request.getGender());
     }

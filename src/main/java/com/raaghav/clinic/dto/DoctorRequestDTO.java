@@ -14,9 +14,6 @@ public class DoctorRequestDTO {
     @Size(max = 40)
     private String email;
 
-    @Size(min = 6, max = 100)
-    private String password;
-
     @Size(max = 60)
     private String specialization;
 
@@ -37,12 +34,11 @@ public class DoctorRequestDTO {
     public DoctorRequestDTO() {
     }
 
-    public DoctorRequestDTO(String name, String email, String password, String specialization,
+    public DoctorRequestDTO(String name, String email, String specialization,
                             int experience, Double consultationFee, LocalTime startTime,
                             LocalTime endTime, String phone) {
         this.name = name;
         this.email = email;
-        this.password = password;
         this.consultationFee = consultationFee;
         this.endTime = endTime;
         this.experience = experience;
@@ -65,14 +61,6 @@ public class DoctorRequestDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getSpecialization() {

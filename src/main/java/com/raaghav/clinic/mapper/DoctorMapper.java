@@ -12,7 +12,6 @@ public class DoctorMapper {
         user.setName(doctorRequestDTO.getName());
         user.setEmail(doctorRequestDTO.getEmail());
         user.setPhone(doctorRequestDTO.getPhone());
-        user.setPassword(doctorRequestDTO.getPassword());
         user.setRole(Role.DOCTOR);
 
         Doctor doctor = new Doctor();
@@ -30,9 +29,6 @@ public class DoctorMapper {
         user.setName(doctorRequestDTO.getName());
         user.setEmail(doctorRequestDTO.getEmail());
         user.setPhone(doctorRequestDTO.getPhone());
-        if (doctorRequestDTO.getPassword() != null && !doctorRequestDTO.getPassword().isBlank()) {
-            user.setPassword(doctorRequestDTO.getPassword());
-        }
         doctor.setStartTime(doctorRequestDTO.getStartTime());
         doctor.setSpecialization(doctorRequestDTO.getSpecialization());
         doctor.setExperience(doctorRequestDTO.getExperience());

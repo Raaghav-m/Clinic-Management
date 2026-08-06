@@ -32,9 +32,6 @@ public class PatientService {
     }
 
     public PatientResponseDTO savePatient(PatientRequestDTO request) {
-        if (request.getPassword() == null || request.getPassword().isBlank()) {
-            throw new IllegalArgumentException("Password is required when creating a patient");
-        }
         Patient patient = PatientMapper.toEntity(request);
         Patient savedPatient = patientRepository.save(patient);
         return PatientMapper.toResponse(savedPatient);

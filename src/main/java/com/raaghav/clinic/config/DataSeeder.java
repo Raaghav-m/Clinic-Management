@@ -138,7 +138,6 @@ public class DataSeeder {
         user.setName(name);
         user.setEmail(email);
         user.setPhone(phone);
-        user.setPassword("password123");
         user.setRole(role);
         return user;
     }
