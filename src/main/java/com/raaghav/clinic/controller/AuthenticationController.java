@@ -25,4 +25,9 @@ public class AuthenticationController {
         System.out.println("hello there");
         return authenticationService.authenticate(loginRequestDTO);
     }
+
+    @GetMapping("/test")
+    public String test() {
+        return "Authenticated!";
+    }
 }

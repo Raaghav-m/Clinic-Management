@@ -75,5 +75,8 @@ public class PrescriptionController {
     public ResponseEntity<PrescriptionResponseDTO> getPrescriptionByConsultationId(@PathVariable Long consultationId){
         return ResponseEntity.ok().body(prescriptionService.getPrescriptionsByConsultationId(consultationId));
     }
-
+    @GetMapping("/test")
+    public String test() {
+        return "Authenticated!";
+    }
 }
