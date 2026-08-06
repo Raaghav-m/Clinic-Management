@@ -12,6 +12,7 @@ import com.raaghav.clinic.mapper.DoctorMapper;
 import com.raaghav.clinic.repository.AppointmentRepository;
 import com.raaghav.clinic.repository.ConsultationRepository;
 import com.raaghav.clinic.repository.DoctorRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,22 +30,26 @@ public class DoctorService {
         this.consultationRepository = consultationRepository;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public DoctorResponseDTO addDoctor(DoctorRequestDTO doctorRequestDTO) {
         Doctor newDoctor = DoctorMapper.toEntity(doctorRequestDTO);
         Doctor savedDoctor = doctorRepository.save(newDoctor);
         return DoctorMapper.toResponse(savedDoctor);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','RECEPTIONIST')")
     public List<DoctorResponseDTO> getAllDoctors() {
         return doctorRepository.findAll().stream().map(DoctorMapper::toResponse).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','RECEPTIONIST')")
     public DoctorResponseDTO getDoctorById(Long id) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The doctor is not found with the given id"));
         return DoctorMapper.toResponse(doctor);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public DoctorResponseDTO updateDoctor(Long id, DoctorRequestDTO doctorRequestDTO) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("the doctor is not found with the given id"));
@@ -53,27 +58,32 @@ public class DoctorService {
         return DoctorMapper.toResponse(doctor);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteDoctor(Long id) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("the doctor is not found with the given id"));
         doctorRepository.delete(doctor);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','RECEPTIONIST')")
     public List<DoctorResponseDTO> getDoctorByName(String name) {
         return doctorRepository.findByUserNameContainingIgnoreCase(name).stream()
                 .map(DoctorMapper::toResponse).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','RECEPTIONIST')")
     public List<DoctorResponseDTO> getDoctorBySpecialization(String name) {
         return doctorRepository.findBySpecializationIgnoreCase(name).stream().map(DoctorMapper::toResponse).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR')")
     public List<AppointmentResponseDTO> getDoctorAppointments(Long id) {
         doctorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("the doctor is not found with the given id"));
         return appointmentRepository.findByDoctorId(id).stream().map(AppointmentMapper::toResponse).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR')")
     public List<ConsultationResponseDTO> getDoctorConsultations(Long id) {
         doctorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("the doctor is not found with the given id"));

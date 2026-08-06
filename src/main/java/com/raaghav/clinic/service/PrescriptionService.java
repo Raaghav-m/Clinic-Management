@@ -9,6 +9,7 @@ import com.raaghav.clinic.mapper.PrescriptionMapper;
 import com.raaghav.clinic.repository.ConsultationRepository;
 import com.raaghav.clinic.repository.PatientRepository;
 import com.raaghav.clinic.repository.PrescriptionRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,15 +22,14 @@ public class PrescriptionService {
     private final PatientRepository patientRepository;
 
     public PrescriptionService(PrescriptionRepository prescriptionRepository,
-                               ConsultationRepository consultationRepository,PatientRepository patientRepository) {
+                               ConsultationRepository consultationRepository, PatientRepository patientRepository) {
         this.prescriptionRepository = prescriptionRepository;
         this.consultationRepository = consultationRepository;
-        this.patientRepository=patientRepository;
+        this.patientRepository = patientRepository;
     }
 
-    // Create
+    @PreAuthorize("hasRole('DOCTOR')")
     public PrescriptionResponseDTO createPrescription(PrescriptionRequestDTO dto) {
-
         Prescription prescription = PrescriptionMapper.toEntity(dto);
 
         Consultation consultation = consultationRepository
@@ -43,28 +43,24 @@ public class PrescriptionService {
         return PrescriptionMapper.toDTO(saved);
     }
 
-    // Get All
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR')")
     public List<PrescriptionResponseDTO> getAllPrescriptions() {
-
         return prescriptionRepository.findAll()
                 .stream()
                 .map(PrescriptionMapper::toDTO)
                 .toList();
     }
 
-    // Get By Id
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR')")
     public PrescriptionResponseDTO getPrescriptionById(Long id) {
-
         Prescription prescription = prescriptionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
 
         return PrescriptionMapper.toDTO(prescription);
     }
 
-    // Update
-    public PrescriptionResponseDTO updatePrescription(Long id,
-                                                      PrescriptionRequestDTO dto) {
-
+    @PreAuthorize("hasRole('DOCTOR')")
+    public PrescriptionResponseDTO updatePrescription(Long id, PrescriptionRequestDTO dto) {
         Prescription prescription = prescriptionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
 
@@ -83,9 +79,8 @@ public class PrescriptionService {
         return PrescriptionMapper.toDTO(updated);
     }
 
-    // Delete
+    @PreAuthorize("hasRole('ADMIN')")
     public void deletePrescription(Long id) {
-
         if (!prescriptionRepository.existsById(id)) {
             throw new ResourceNotFoundException("Prescription not found");
         }
@@ -93,12 +88,18 @@ public class PrescriptionService {
         prescriptionRepository.deleteById(id);
     }
 
-    public List<PrescriptionResponseDTO> getPrescriptionsByPatientId(Long id){
-        patientRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("There is no patient with the given patient id"));
-        return prescriptionRepository.findByConsultationAppointmentPatientId(id).stream().map(PrescriptionMapper::toDTO).toList();
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR') or @patientSecurity.isOwner(#id, authentication)")
+    public List<PrescriptionResponseDTO> getPrescriptionsByPatientId(Long id) {
+        patientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no patient with the given patient id"));
+        return prescriptionRepository.findByConsultationAppointmentPatientId(id).stream()
+                .map(PrescriptionMapper::toDTO).toList();
     }
-    public PrescriptionResponseDTO getPrescriptionsByConsultationId(Long id){
-        consultationRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("There is no consultation with the given id"));
+
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR')")
+    public PrescriptionResponseDTO getPrescriptionsByConsultationId(Long id) {
+        consultationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no consultation with the given id"));
         return PrescriptionMapper.toDTO(prescriptionRepository.findByConsultationId(id));
     }
 }

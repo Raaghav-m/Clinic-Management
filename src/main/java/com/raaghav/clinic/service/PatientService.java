@@ -11,6 +11,7 @@ import com.raaghav.clinic.repository.AppointmentRepository;
 import com.raaghav.clinic.repository.ConsultationRepository;
 import com.raaghav.clinic.repository.PatientRepository;
 import com.raaghav.clinic.repository.PrescriptionRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,22 +32,26 @@ public class PatientService {
         this.appointmentRepository = appointmentRepository;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST')")
     public PatientResponseDTO savePatient(PatientRequestDTO request) {
         Patient patient = PatientMapper.toEntity(request);
         Patient savedPatient = patientRepository.save(patient);
         return PatientMapper.toResponse(savedPatient);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST','DOCTOR') or @patientSecurity.isOwner(#id, authentication)")
     public PatientResponseDTO getPatientById(Long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found with given id"));
         return PatientMapper.toResponse(patient);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST','DOCTOR')")
     public List<PatientResponseDTO> getAllPatients() {
         return patientRepository.findAll().stream().map(PatientMapper::toResponse).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST')")
     public PatientResponseDTO updatePatient(Long id, PatientRequestDTO request) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient with the id is not found"));
@@ -55,22 +60,26 @@ public class PatientService {
         return PatientMapper.toResponse(patient);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST')")
     public void deletePatient(Long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient with the id is not found"));
         patientRepository.delete(patient);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','RECEPTIONIST')")
     public List<PatientResponseDTO> getPatientsByName(String searchString) {
         return patientRepository.findByUserNameContainingIgnoreCase(searchString).stream()
                 .map(PatientMapper::toResponse).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','RECEPTIONIST')")
     public List<PatientResponseDTO> getPatientByPhone(String phone) {
         return patientRepository.findByUserPhoneContaining(phone).stream()
                 .map(PatientMapper::toResponse).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR') or @patientSecurity.isOwner(#id, authentication)")
     public PatientSummaryResponseDTO getPatientSummary(Long id) {
         PatientSummaryResponseDTO patientSummaryResponseDTO = new PatientSummaryResponseDTO();
         Patient patient = patientRepository.findById(id)
