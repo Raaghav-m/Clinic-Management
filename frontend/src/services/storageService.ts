@@ -1,0 +1,24 @@
+const AUTH_STORAGE_KEY = 'clinic-auth'
+
+export const storageService = {
+  get<T>(key: string): T | null {
+    try {
+      const value = localStorage.getItem(key)
+      return value ? (JSON.parse(value) as T) : null
+    } catch {
+      return null
+    }
+  },
+
+  set<T>(key: string, value: T): void {
+    localStorage.setItem(key, JSON.stringify(value))
+  },
+
+  remove(key: string): void {
+    localStorage.removeItem(key)
+  },
+
+  clearAuth(): void {
+    localStorage.removeItem(AUTH_STORAGE_KEY)
+  },
+}

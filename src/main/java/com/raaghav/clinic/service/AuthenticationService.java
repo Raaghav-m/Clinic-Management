@@ -7,6 +7,8 @@ import com.raaghav.clinic.entity.Role;
 import com.raaghav.clinic.entity.User;
 import com.raaghav.clinic.exception.ResourceNotFoundException;
 import com.raaghav.clinic.mapper.AuthenticationMapper;
+import com.raaghav.clinic.repository.DoctorRepository;
+import com.raaghav.clinic.repository.PatientRepository;
 import com.raaghav.clinic.repository.UserRepository;
 import com.raaghav.clinic.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,16 +21,22 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
 
     public AuthenticationService(
             JwtService jwtService,
             AuthenticationManager authenticationManager,
             UserRepository userRepository,
+            PatientRepository patientRepository,
+            DoctorRepository doctorRepository,
             PasswordEncoder passwordEncoder) {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.patientRepository = patientRepository;
+        this.doctorRepository = doctorRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -40,7 +48,7 @@ public class AuthenticationService {
 
         userRepository.save(user);
         String token = jwtService.generateToken(user);
-        return AuthenticationMapper.toResponse(token);
+        return AuthenticationMapper.toResponse(token, user, resolveProfileId(user));
     }
 
     public AuthenticationResponseDTO authenticate(LoginRequestDTO loginRequestDTO) {
@@ -54,6 +62,20 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(loginRequestDTO.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("The given email id is not found"));
         String token = jwtService.generateToken(user);
-        return AuthenticationMapper.toResponse(token);
+        return AuthenticationMapper.toResponse(token, user, resolveProfileId(user));
+    }
+
+    private Long resolveProfileId(User user) {
+        if (user.getRole() == Role.PATIENT) {
+            return patientRepository.findByUser_Id(user.getId())
+                    .map(patient -> patient.getId())
+                    .orElse(null);
+        }
+        if (user.getRole() == Role.DOCTOR) {
+            return doctorRepository.findByUser_Id(user.getId())
+                    .map(doctor -> doctor.getId())
+                    .orElse(null);
+        }
+        return null;
     }
 }

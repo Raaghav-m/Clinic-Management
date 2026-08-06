@@ -31,8 +31,15 @@ public class ConsultationService {
     public ConsultationResponseDTO createConsultation(ConsultationRequestDTO request) {
         Appointment appointment = appointmentRepository.findById(request.getAppointmentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment with given appointment id is not found"));
+        if (appointment.getStatus() == Appointment.AppointmentStatus.CANCELLED) {
+            throw new IllegalStateException("Cannot record consultation for a cancelled appointment");
+        }
         Consultation consultation = ConsultationMapper.toEntity(request, appointment);
         Consultation savedConsultation = consultationRepository.save(consultation);
+        if (appointment.getStatus() == Appointment.AppointmentStatus.BOOKED) {
+            appointment.setStatus(Appointment.AppointmentStatus.COMPLETED);
+            appointmentRepository.save(appointment);
+        }
         return ConsultationMapper.toResponse(savedConsultation);
     }
 
