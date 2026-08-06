@@ -19,15 +19,15 @@ public class JwtService {
     private String secret;
 
     @Value("${jwt.expiration}")
-    private Long expriration;
+    private Long expiration;
 
     private SecretKey getSigningKey(){
         byte[] keyBytes= Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-    private String generateToken(UserDetails userDetails){
+    public String generateToken(UserDetails userDetails){
         return Jwts.builder().subject(userDetails.getUsername()).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(
-                System.currentTimeMillis()+expriration
+                System.currentTimeMillis()+expiration
         )).signWith(getSigningKey()).compact();
     }
 
