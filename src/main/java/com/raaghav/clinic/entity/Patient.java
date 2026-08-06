@@ -14,8 +14,6 @@ public class Patient {
 
     private String gender;
 
-    private Integer age;
-
     @Column(length = 100)
     private String address;
 
@@ -30,7 +28,7 @@ public class Patient {
     @Column(length = 500)
     private String medicalHistory;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne()
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
 
@@ -62,14 +60,6 @@ public class Patient {
 
     public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
     }
 
     public String getAddress() {

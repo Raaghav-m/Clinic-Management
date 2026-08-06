@@ -1,16 +1,11 @@
 package com.raaghav.clinic.dto;
 
-
-import com.raaghav.clinic.entity.Patient;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class PatientSummaryResponseDTO {
 
     private Long id;
     private String patientName;
-    private int age;
     private String phone;
     private int totalAppointments;
     private int completedAppointments;
@@ -36,14 +31,6 @@ public class PatientSummaryResponseDTO {
 
     public void setPatientName(String patientName) {
         this.patientName = patientName;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public String getPhone() {

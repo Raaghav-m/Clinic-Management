@@ -76,7 +76,6 @@ public class PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException("the patient with the given id is not found"));
 
         patientSummaryResponseDTO.setId(id);
-        patientSummaryResponseDTO.setAge(patient.getAge());
         patientSummaryResponseDTO.setPatientName(patient.getUser().getName());
         patientSummaryResponseDTO.setPhone(patient.getUser().getPhone());
         patientSummaryResponseDTO.setTotalAppointments(appointmentRepository.countByPatientId(id));

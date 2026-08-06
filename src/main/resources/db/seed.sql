@@ -11,22 +11,22 @@ TRUNCATE TABLE doctor;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Patients
-INSERT INTO patient (id, name, gender, phone, email, age, address, emergency_contact, blood_group) VALUES
-(1, 'Priya Sharma', 'Female', '9876543210', 'priya.sharma@gmail.com', 34,
+INSERT INTO patient (id, name, gender, phone, email, address, emergency_contact, blood_group) VALUES
+(1, 'Priya Sharma', 'Female', '9876543210', 'priya.sharma@gmail.com',
  '14 MG Road, Koramangala, Bangalore', '9123456780', 'O+'),
-(2, 'Arjun Mehta', 'Male', '9823456710', 'arjun.mehta@yahoo.com', 52,
+(2, 'Arjun Mehta', 'Male', '9823456710', 'arjun.mehta@yahoo.com',
  '22 Park Street, Kolkata', '9834567890', 'A+'),
-(3, 'Lakshmi Iyer', 'Female', '9845678901', 'lakshmi.iyer@outlook.com', 28,
+(3, 'Lakshmi Iyer', 'Female', '9845678901', 'lakshmi.iyer@outlook.com',
  '8 Anna Salai, T Nagar, Chennai', '9856789012', 'B+'),
-(4, 'Rahul Kapoor', 'Male', '9867890123', 'rahul.kapoor@gmail.com', 41,
+(4, 'Rahul Kapoor', 'Male', '9867890123', 'rahul.kapoor@gmail.com',
  '5 Bandra West, Mumbai', '9878901234', 'AB+'),
-(5, 'Sneha Patel', 'Female', '9889012345', 'sneha.patel@hotmail.com', 36,
+(5, 'Sneha Patel', 'Female', '9889012345', 'sneha.patel@hotmail.com',
  '19 SG Highway, Ahmedabad', '9890123456', 'O+'),
-(6, 'Mohammed Farhan', 'Male', '9901234567', 'farhan.khan@gmail.com', 29,
+(6, 'Mohammed Farhan', 'Male', '9901234567', 'farhan.khan@gmail.com',
  '3 Banjara Hills, Hyderabad', '9912345678', 'A+'),
-(7, 'Divya Nair', 'Female', '9923456789', 'divya.nair@gmail.com', 47,
+(7, 'Divya Nair', 'Female', '9923456789', 'divya.nair@gmail.com',
  '11 Marine Drive, Kochi', '9934567890', 'B+'),
-(8, 'Karthik Venkatesh', 'Male', '9945678901', 'karthik.v@icloud.com', 38,
+(8, 'Karthik Venkatesh', 'Male', '9945678901', 'karthik.v@icloud.com',
  '7 HSR Layout, Bangalore', '9956789012', 'O+');
 
 -- Doctors

@@ -16,7 +16,6 @@ public class PatientMapper {
 
         Patient patient = new Patient();
         patient.setUser(user);
-        patient.setAge(request.getAge());
         patient.setGender(request.getGender());
         return patient;
     }
@@ -26,7 +25,6 @@ public class PatientMapper {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
-        patient.setAge(request.getAge());
         patient.setGender(request.getGender());
     }
 
@@ -36,7 +34,6 @@ public class PatientMapper {
         response.setId(savedPatient.getId());
         response.setName(user.getName());
         response.setEmail(user.getEmail());
-        response.setAge(savedPatient.getAge());
         response.setGender(savedPatient.getGender());
         response.setPhone(user.getPhone());
         return response;

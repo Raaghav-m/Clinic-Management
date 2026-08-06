@@ -12,9 +12,6 @@ public class PatientRequestDTO {
     @Size(max = 40)
     private String email;
 
-    @Min(value = 0, message = "Age cannot be negative")
-    private Integer age;
-
     @NotBlank(message = "Gender is required")
     private String gender;
 
@@ -25,10 +22,9 @@ public class PatientRequestDTO {
     public PatientRequestDTO() {
     }
 
-    public PatientRequestDTO(String name, String email, Integer age, String gender, String phone) {
+    public PatientRequestDTO(String name, String email, String gender, String phone) {
         this.name = name;
         this.email = email;
-        this.age = age;
         this.gender = gender;
         this.phone = phone;
     }
@@ -47,14 +43,6 @@ public class PatientRequestDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
     }
 
     public String getGender() {

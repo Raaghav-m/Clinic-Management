@@ -28,21 +28,21 @@ public class DataSeeder {
             }
 
             var patients = patientRepository.saveAll(java.util.List.of(
-                    patient("Priya Sharma", "Female", "9876543210", "priya.sharma@gmail.com", 34,
+                    patient("Priya Sharma", "Female", "9876543210", "priya.sharma@gmail.com",
                             "14 MG Road, Koramangala, Bangalore", "9123456780", "O+"),
-                    patient("Arjun Mehta", "Male", "9823456710", "arjun.mehta@yahoo.com", 52,
+                    patient("Arjun Mehta", "Male", "9823456710", "arjun.mehta@yahoo.com",
                             "22 Park Street, Kolkata", "9834567890", "A+"),
-                    patient("Lakshmi Iyer", "Female", "9845678901", "lakshmi.iyer@outlook.com", 28,
+                    patient("Lakshmi Iyer", "Female", "9845678901", "lakshmi.iyer@outlook.com",
                             "8 Anna Salai, T Nagar, Chennai", "9856789012", "B+"),
-                    patient("Rahul Kapoor", "Male", "9867890123", "rahul.kapoor@gmail.com", 41,
+                    patient("Rahul Kapoor", "Male", "9867890123", "rahul.kapoor@gmail.com",
                             "5 Bandra West, Mumbai", "9878901234", "AB+"),
-                    patient("Sneha Patel", "Female", "9889012345", "sneha.patel@hotmail.com", 36,
+                    patient("Sneha Patel", "Female", "9889012345", "sneha.patel@hotmail.com",
                             "19 SG Highway, Ahmedabad", "9890123456", "O+"),
-                    patient("Mohammed Farhan", "Male", "9901234567", "farhan.khan@gmail.com", 29,
+                    patient("Mohammed Farhan", "Male", "9901234567", "farhan.khan@gmail.com",
                             "3 Banjara Hills, Hyderabad", "9912345678", "A+"),
-                    patient("Divya Nair", "Female", "9923456789", "divya.nair@gmail.com", 47,
+                    patient("Divya Nair", "Female", "9923456789", "divya.nair@gmail.com",
                             "11 Marine Drive, Kochi", "9934567890", "B+"),
-                    patient("Karthik Venkatesh", "Male", "9945678901", "karthik.v@icloud.com", 38,
+                    patient("Karthik Venkatesh", "Male", "9945678901", "karthik.v@icloud.com",
                             "7 HSR Layout, Bangalore", "9956789012", "O+")
             ));
 
@@ -142,12 +142,11 @@ public class DataSeeder {
         return user;
     }
 
-    private static Patient patient(String name, String gender, String phone, String email, int age,
+    private static Patient patient(String name, String gender, String phone, String email,
                                    String address, String emergencyContact, String bloodGroup) {
         var p = new Patient();
         p.setUser(user(name, email, phone, Role.PATIENT));
         p.setGender(gender);
-        p.setAge(age);
         p.setAddress(address);
         p.setEmergencyContact(emergencyContact);
         p.setBloodGroup(bloodGroup);

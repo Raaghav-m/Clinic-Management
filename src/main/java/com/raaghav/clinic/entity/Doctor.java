@@ -25,7 +25,7 @@ public class Doctor {
     @Column(name = "end_time")
     private LocalTime endTime;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne()
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
 
