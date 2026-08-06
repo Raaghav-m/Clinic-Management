@@ -21,8 +21,8 @@ public class AppointmentMapper {
         appointmentResponseDTO.setDoctorId(appointment.getDoctor().getId());
         appointmentResponseDTO.setStatus(appointment.getStatus());
         appointmentResponseDTO.setPatientId(appointment.getPatient().getId());
-        appointmentResponseDTO.setDoctorName(appointment.getDoctor().getName());
-        appointmentResponseDTO.setPatientName(appointment.getPatient().getName());
+        appointmentResponseDTO.setDoctorName(appointment.getDoctor().getUser().getName());
+        appointmentResponseDTO.setPatientName(appointment.getPatient().getUser().getName());
         appointmentResponseDTO.setId(appointment.getId());
         return appointmentResponseDTO;
     }

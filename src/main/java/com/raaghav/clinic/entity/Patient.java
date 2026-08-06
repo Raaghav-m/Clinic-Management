@@ -11,28 +11,34 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column (nullable = false,length = 60)
-    private String name;
 
     private String gender;
 
-    @Column(length = 15)
-    private String phone;
-    @Column(length=40,unique = true)
-    private String email;
-
     private Integer age;
 
-    @Column (length=100)
+    @Column(length = 100)
     private String address;
-    @Column(length=15,name="emergency_contact")
+
+    @Column(length = 15, name = "emergency_contact")
     private String emergencyContact;
 
     @Column(name = "blood_group", length = 3)
     private String bloodGroup;
 
+    private LocalDate dob;
+
+    @Column(length = 500)
+    private String medicalHistory;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
+    private User user;
+
     @OneToMany(mappedBy = "patient")
     private List<Appointment> appointmentList;
+
+    public Patient() {
+    }
 
     public List<Appointment> getAppointmentList() {
         return appointmentList;
@@ -42,11 +48,6 @@ public class Patient {
         this.appointmentList = appointmentList;
     }
 
-
-
-    public Patient(){}
-
-
     public Long getId() {
         return id;
     }
@@ -54,15 +55,6 @@ public class Patient {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
 
     public String getGender() {
         return gender;
@@ -72,20 +64,12 @@ public class Patient {
         this.gender = gender;
     }
 
-    public String getPhone() {
-        return phone;
+    public Integer getAge() {
+        return age;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public String getAddress() {
@@ -112,12 +96,27 @@ public class Patient {
         this.bloodGroup = bloodGroup;
     }
 
-
-    public Integer getAge() {
-        return age;
+    public LocalDate getDob() {
+        return dob;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
+    public String getMedicalHistory() {
+        return medicalHistory;
+    }
+
+    public void setMedicalHistory(String medicalHistory) {
+        this.medicalHistory = medicalHistory;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

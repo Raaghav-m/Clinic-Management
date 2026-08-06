@@ -47,14 +47,22 @@ public class DataSeeder {
             ));
 
             var doctors = doctorRepository.saveAll(java.util.List.of(
-                    doctor("Dr. Ananya Reddy", "Cardiology", 15, 1500.0, "09:00", "17:00", "9876000001"),
-                    doctor("Dr. Vikram Singh", "Orthopedics", 12, 1200.0, "10:00", "18:00", "9876000002"),
-                    doctor("Dr. Meera Joshi", "Dermatology", 8, 800.0, "09:30", "16:30", "9876000003"),
-                    doctor("Dr. Rajesh Kumar", "General Medicine", 20, 600.0, "08:00", "20:00", "9876000004"),
-                    doctor("Dr. Sunita Rao", "Pediatrics", 10, 900.0, "09:00", "15:00", "9876000005"),
-                    doctor("Dr. Amit Desai", "Neurology", 18, 2000.0, "11:00", "19:00", "9876000006"),
-                    doctor("Dr. Kavitha Menon", "Gynecology", 14, 1100.0, "10:00", "17:00", "9876000007"),
-                    doctor("Dr. Suresh Pillai", "ENT", 11, 750.0, "09:00", "16:00", "9876000008")
+                    doctor("Dr. Ananya Reddy", "Cardiology", 15, 1500.0, "09:00", "17:00", "9876000001",
+                            "ananya.reddy@clinic.com"),
+                    doctor("Dr. Vikram Singh", "Orthopedics", 12, 1200.0, "10:00", "18:00", "9876000002",
+                            "vikram.singh@clinic.com"),
+                    doctor("Dr. Meera Joshi", "Dermatology", 8, 800.0, "09:30", "16:30", "9876000003",
+                            "meera.joshi@clinic.com"),
+                    doctor("Dr. Rajesh Kumar", "General Medicine", 20, 600.0, "08:00", "20:00", "9876000004",
+                            "rajesh.kumar@clinic.com"),
+                    doctor("Dr. Sunita Rao", "Pediatrics", 10, 900.0, "09:00", "15:00", "9876000005",
+                            "sunita.rao@clinic.com"),
+                    doctor("Dr. Amit Desai", "Neurology", 18, 2000.0, "11:00", "19:00", "9876000006",
+                            "amit.desai@clinic.com"),
+                    doctor("Dr. Kavitha Menon", "Gynecology", 14, 1100.0, "10:00", "17:00", "9876000007",
+                            "kavitha.menon@clinic.com"),
+                    doctor("Dr. Suresh Pillai", "ENT", 11, 750.0, "09:00", "16:00", "9876000008",
+                            "suresh.pillai@clinic.com")
             ));
 
             var appointments = appointmentRepository.saveAll(java.util.List.of(
@@ -125,13 +133,21 @@ public class DataSeeder {
         };
     }
 
+    private static User user(String name, String email, String phone, Role role) {
+        var user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setPassword("password123");
+        user.setRole(role);
+        return user;
+    }
+
     private static Patient patient(String name, String gender, String phone, String email, int age,
                                    String address, String emergencyContact, String bloodGroup) {
         var p = new Patient();
-        p.setName(name);
+        p.setUser(user(name, email, phone, Role.PATIENT));
         p.setGender(gender);
-        p.setPhone(phone);
-        p.setEmail(email);
         p.setAge(age);
         p.setAddress(address);
         p.setEmergencyContact(emergencyContact);
@@ -140,15 +156,14 @@ public class DataSeeder {
     }
 
     private static Doctor doctor(String name, String specialization, int experience, double fee,
-                                 String start, String end, String phone) {
+                                 String start, String end, String phone, String email) {
         var d = new Doctor();
-        d.setName(name);
+        d.setUser(user(name, email, phone, Role.DOCTOR));
         d.setSpecialization(specialization);
         d.setExperience(experience);
         d.setConsultationFee(fee);
         d.setStartTime(LocalTime.parse(start));
         d.setEndTime(LocalTime.parse(end));
-        d.setPhone(phone);
         return d;
     }
 

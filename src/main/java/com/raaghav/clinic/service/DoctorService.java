@@ -21,53 +21,64 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final AppointmentRepository appointmentRepository;
     private final ConsultationRepository consultationRepository;
-    public DoctorService(DoctorRepository doctorRepository,AppointmentRepository appointmentRepository,ConsultationRepository consultationRepository){
-        this.doctorRepository=doctorRepository;
-        this.appointmentRepository=appointmentRepository;
-        this.consultationRepository=consultationRepository;
+
+    public DoctorService(DoctorRepository doctorRepository, AppointmentRepository appointmentRepository,
+                         ConsultationRepository consultationRepository) {
+        this.doctorRepository = doctorRepository;
+        this.appointmentRepository = appointmentRepository;
+        this.consultationRepository = consultationRepository;
     }
-    public DoctorResponseDTO addDoctor(DoctorRequestDTO doctorRequestDTO){
-        Doctor newDoctor= DoctorMapper.toEntity(doctorRequestDTO);
-        Doctor savedDoctor=doctorRepository.save(newDoctor);
+
+    public DoctorResponseDTO addDoctor(DoctorRequestDTO doctorRequestDTO) {
+        if (doctorRequestDTO.getPassword() == null || doctorRequestDTO.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Password is required when creating a doctor");
+        }
+        Doctor newDoctor = DoctorMapper.toEntity(doctorRequestDTO);
+        Doctor savedDoctor = doctorRepository.save(newDoctor);
         return DoctorMapper.toResponse(savedDoctor);
     }
-    public List<DoctorResponseDTO> getAllDoctors(){
+
+    public List<DoctorResponseDTO> getAllDoctors() {
         return doctorRepository.findAll().stream().map(DoctorMapper::toResponse).toList();
     }
-    public DoctorResponseDTO getDoctorById(Long id){
-        Doctor doctor= doctorRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("The doctor is not found with the given id"));
+
+    public DoctorResponseDTO getDoctorById(Long id) {
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("The doctor is not found with the given id"));
         return DoctorMapper.toResponse(doctor);
     }
 
-    public DoctorResponseDTO updateDoctor(Long id, DoctorRequestDTO doctorRequestDTO){
-        Doctor doctor=doctorRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("the doctor is not found with the given id"));
-        doctor.setStartTime(doctorRequestDTO.getStartTime());
-        doctor.setSpecialization(doctorRequestDTO.getSpecialization());
-        doctor.setPhone(doctorRequestDTO.getPhone());
-        doctor.setName(doctorRequestDTO.getName());
-        doctor.setExperience(doctorRequestDTO.getExperience());
-        doctor.setEndTime(doctorRequestDTO.getEndTime());
-        doctor.setConsultationFee(doctorRequestDTO.getConsultationFee());
+    public DoctorResponseDTO updateDoctor(Long id, DoctorRequestDTO doctorRequestDTO) {
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("the doctor is not found with the given id"));
+        DoctorMapper.updateEntity(doctor, doctorRequestDTO);
         doctorRepository.save(doctor);
         return DoctorMapper.toResponse(doctor);
     }
-    public void deleteDoctor(Long id){
-        Doctor doctor=doctorRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("the doctor is not found with the given id"));
+
+    public void deleteDoctor(Long id) {
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("the doctor is not found with the given id"));
         doctorRepository.delete(doctor);
     }
 
-    public List<DoctorResponseDTO> getDoctorByName(String name){
+    public List<DoctorResponseDTO> getDoctorByName(String name) {
         return doctorRepository.findByNameContainingIgnoreCase(name).stream().map(DoctorMapper::toResponse).toList();
     }
-    public List<DoctorResponseDTO> getDoctorBySpecialization(String name){
+
+    public List<DoctorResponseDTO> getDoctorBySpecialization(String name) {
         return doctorRepository.findBySpecializationIgnoreCase(name).stream().map(DoctorMapper::toResponse).toList();
     }
-    public List<AppointmentResponseDTO> getDoctorAppointments(Long id){
-        Doctor doctor=doctorRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("the doctor is not found with the given id"));
+
+    public List<AppointmentResponseDTO> getDoctorAppointments(Long id) {
+        doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("the doctor is not found with the given id"));
         return appointmentRepository.findByDoctorId(id).stream().map(AppointmentMapper::toResponse).toList();
     }
-    public List<ConsultationResponseDTO> getDoctorConsultations(Long id){
-        Doctor doctor=doctorRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("the doctor is not found with the given id"));
+
+    public List<ConsultationResponseDTO> getDoctorConsultations(Long id) {
+        doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("the doctor is not found with the given id"));
         return consultationRepository.findByAppointmentDoctorId(id).stream().map(ConsultationMapper::toResponse).toList();
     }
 }

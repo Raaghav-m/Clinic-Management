@@ -6,13 +6,21 @@ import java.time.LocalTime;
 
 public class DoctorRequestDTO {
     @NotBlank(message = "Name cannot be blank")
-    @Size(max=60)
+    @Size(max = 60)
     private String name;
+
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email must be valid")
+    @Size(max = 40)
+    private String email;
+
+    @Size(min = 6, max = 100)
+    private String password;
 
     @Size(max = 60)
     private String specialization;
 
-    @Min(value = 0,message = "Experience cannot be negative")
+    @Min(value = 0, message = "Experience cannot be negative")
     private int experience;
 
     @Positive(message = "Consultation fee cannot be negative")
@@ -22,20 +30,26 @@ public class DoctorRequestDTO {
     private LocalTime endTime;
 
     @NotBlank
-    @Pattern(regexp =  "^[0-9]{10}$",
+    @Pattern(regexp = "^[0-9]{10}$",
             message = "Phone number must contain exactly 10 digits")
     private String phone;
 
-    public DoctorRequestDTO(String name,String specialization,int experience,Double consultationFee,LocalTime startTime,LocalTime endTime,String phone){
-        this.consultationFee=consultationFee;
-        this.endTime=endTime;
-        this.experience=experience;
-        this.startTime=startTime;
-        this.specialization=specialization;
-        this.name=name;
-        this.phone=phone;
+    public DoctorRequestDTO() {
     }
-    public DoctorRequestDTO(){}
+
+    public DoctorRequestDTO(String name, String email, String password, String specialization,
+                            int experience, Double consultationFee, LocalTime startTime,
+                            LocalTime endTime, String phone) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.consultationFee = consultationFee;
+        this.endTime = endTime;
+        this.experience = experience;
+        this.startTime = startTime;
+        this.specialization = specialization;
+        this.phone = phone;
+    }
 
     public String getName() {
         return name;
@@ -43,6 +57,22 @@ public class DoctorRequestDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getSpecialization() {

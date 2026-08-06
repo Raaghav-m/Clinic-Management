@@ -1,10 +1,6 @@
 package com.raaghav.clinic.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -15,10 +11,7 @@ public class Doctor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,length = 60)
-    private String name;
-
-    @Column(length=60)
+    @Column(length = 60)
     private String specialization;
 
     private Integer experience;
@@ -29,11 +22,12 @@ public class Doctor {
     @Column(name = "start_time")
     private LocalTime startTime;
 
-    @Column(name="end_time")
+    @Column(name = "end_time")
     private LocalTime endTime;
 
-    @Column(length = 15)
-    private String phone;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointmentList;
@@ -52,14 +46,6 @@ public class Doctor {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getSpecialization() {
@@ -102,11 +88,11 @@ public class Doctor {
         this.endTime = endTime;
     }
 
-    public String getPhone() {
-        return phone;
+    public User getUser() {
+        return user;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
