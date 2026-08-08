@@ -1,57 +1,50 @@
--- Clinic sample data: 8 patients, 8 doctors, 10 appointments, 8 consultations, 8 prescriptions
+-- Clinic seed data (runs on empty database via SqlDatabaseSeeder in Docker profile)
+-- Password placeholder is replaced at runtime with a BCrypt hash for Password@123
 
-USE clinic_db;
-
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE prescription;
-TRUNCATE TABLE consultation;
-TRUNCATE TABLE appointment;
-TRUNCATE TABLE patient;
-TRUNCATE TABLE doctor;
-SET FOREIGN_KEY_CHECKS = 1;
+-- Users (admin, receptionists, patients, doctors)
+INSERT INTO users (id, name, email, phone, password, role) VALUES
+(1, 'Clinic Admin', 'admin@clinic.com', '9000000001', '__BCRYPT_PASSWORD__', 'ADMIN'),
+(2, 'Anita Reception', 'receptionist1@clinic.com', '9000000002', '__BCRYPT_PASSWORD__', 'RECEPTIONIST'),
+(3, 'Ravi FrontDesk', 'receptionist2@clinic.com', '9000000003', '__BCRYPT_PASSWORD__', 'RECEPTIONIST'),
+(4, 'Priya Sharma', 'priya.sharma@gmail.com', '9876543210', '__BCRYPT_PASSWORD__', 'PATIENT'),
+(5, 'Arjun Mehta', 'arjun.mehta@yahoo.com', '9823456710', '__BCRYPT_PASSWORD__', 'PATIENT'),
+(6, 'Lakshmi Iyer', 'lakshmi.iyer@outlook.com', '9845678901', '__BCRYPT_PASSWORD__', 'PATIENT'),
+(7, 'Rahul Kapoor', 'rahul.kapoor@gmail.com', '9867890123', '__BCRYPT_PASSWORD__', 'PATIENT'),
+(8, 'Sneha Patel', 'sneha.patel@hotmail.com', '9889012345', '__BCRYPT_PASSWORD__', 'PATIENT'),
+(9, 'Mohammed Farhan', 'farhan.khan@gmail.com', '9901234567', '__BCRYPT_PASSWORD__', 'PATIENT'),
+(10, 'Dr. Ananya Reddy', 'ananya.reddy@clinic.com', '9876000001', '__BCRYPT_PASSWORD__', 'DOCTOR'),
+(11, 'Dr. Vikram Singh', 'vikram.singh@clinic.com', '9876000002', '__BCRYPT_PASSWORD__', 'DOCTOR'),
+(12, 'Dr. Meera Joshi', 'meera.joshi@clinic.com', '9876000003', '__BCRYPT_PASSWORD__', 'DOCTOR'),
+(13, 'Dr. Rajesh Kumar', 'rajesh.kumar@clinic.com', '9876000004', '__BCRYPT_PASSWORD__', 'DOCTOR'),
+(14, 'Dr. Sunita Rao', 'sunita.rao@clinic.com', '9876000005', '__BCRYPT_PASSWORD__', 'DOCTOR');
 
 -- Patients
-INSERT INTO patient (id, name, gender, phone, email, address, emergency_contact, blood_group) VALUES
-(1, 'Priya Sharma', 'Female', '9876543210', 'priya.sharma@gmail.com',
- '14 MG Road, Koramangala, Bangalore', '9123456780', 'O+'),
-(2, 'Arjun Mehta', 'Male', '9823456710', 'arjun.mehta@yahoo.com',
- '22 Park Street, Kolkata', '9834567890', 'A+'),
-(3, 'Lakshmi Iyer', 'Female', '9845678901', 'lakshmi.iyer@outlook.com',
- '8 Anna Salai, T Nagar, Chennai', '9856789012', 'B+'),
-(4, 'Rahul Kapoor', 'Male', '9867890123', 'rahul.kapoor@gmail.com',
- '5 Bandra West, Mumbai', '9878901234', 'AB+'),
-(5, 'Sneha Patel', 'Female', '9889012345', 'sneha.patel@hotmail.com',
- '19 SG Highway, Ahmedabad', '9890123456', 'O+'),
-(6, 'Mohammed Farhan', 'Male', '9901234567', 'farhan.khan@gmail.com',
- '3 Banjara Hills, Hyderabad', '9912345678', 'A+'),
-(7, 'Divya Nair', 'Female', '9923456789', 'divya.nair@gmail.com',
- '11 Marine Drive, Kochi', '9934567890', 'B+'),
-(8, 'Karthik Venkatesh', 'Male', '9945678901', 'karthik.v@icloud.com',
- '7 HSR Layout, Bangalore', '9956789012', 'O+');
+INSERT INTO patient (id, gender, address, emergency_contact, blood_group, user_id) VALUES
+(1, 'Female', '14 MG Road, Koramangala, Bangalore', '9123456780', 'O+', 4),
+(2, 'Male', '22 Park Street, Kolkata', '9834567890', 'A+', 5),
+(3, 'Female', '8 Anna Salai, T Nagar, Chennai', '9856789012', 'B+', 6),
+(4, 'Male', '5 Bandra West, Mumbai', '9878901234', 'AB+', 7),
+(5, 'Female', '19 SG Highway, Ahmedabad', '9890123456', 'O+', 8),
+(6, 'Male', '3 Banjara Hills, Hyderabad', '9912345678', 'A+', 9);
 
 -- Doctors
-INSERT INTO doctor (id, name, specialization, experience, consultation_fee, start_time, end_time, phone) VALUES
-(1, 'Dr. Ananya Reddy', 'Cardiology', 15, 1500.00, '09:00:00', '17:00:00', '9876000001'),
-(2, 'Dr. Vikram Singh', 'Orthopedics', 12, 1200.00, '10:00:00', '18:00:00', '9876000002'),
-(3, 'Dr. Meera Joshi', 'Dermatology', 8, 800.00, '09:30:00', '16:30:00', '9876000003'),
-(4, 'Dr. Rajesh Kumar', 'General Medicine', 20, 600.00, '08:00:00', '20:00:00', '9876000004'),
-(5, 'Dr. Sunita Rao', 'Pediatrics', 10, 900.00, '09:00:00', '15:00:00', '9876000005'),
-(6, 'Dr. Amit Desai', 'Neurology', 18, 2000.00, '11:00:00', '19:00:00', '9876000006'),
-(7, 'Dr. Kavitha Menon', 'Gynecology', 14, 1100.00, '10:00:00', '17:00:00', '9876000007'),
-(8, 'Dr. Suresh Pillai', 'ENT', 11, 750.00, '09:00:00', '16:00:00', '9876000008');
+INSERT INTO doctor (id, specialization, experience, consultation_fee, start_time, end_time, user_id) VALUES
+(1, 'Cardiology', 15, 1500.00, '09:00:00', '17:00:00', 10),
+(2, 'Orthopedics', 12, 1200.00, '10:00:00', '18:00:00', 11),
+(3, 'Dermatology', 8, 800.00, '09:30:00', '16:30:00', 12),
+(4, 'General Medicine', 20, 600.00, '08:00:00', '20:00:00', 13),
+(5, 'Pediatrics', 10, 900.00, '09:00:00', '15:00:00', 14);
 
--- Appointments (8 completed, 1 booked, 1 cancelled)
+-- Appointments
 INSERT INTO appointment (id, patient_id, doctor_id, appointment_time, status) VALUES
 (1, 1, 1, '2026-07-15 10:00:00', 'COMPLETED'),
 (2, 2, 2, '2026-07-18 11:30:00', 'COMPLETED'),
 (3, 3, 3, '2026-07-20 14:00:00', 'COMPLETED'),
 (4, 4, 4, '2026-07-22 09:00:00', 'COMPLETED'),
 (5, 5, 5, '2026-07-25 10:30:00', 'COMPLETED'),
-(6, 6, 6, '2026-07-28 15:00:00', 'COMPLETED'),
-(7, 7, 7, '2026-07-30 11:00:00', 'COMPLETED'),
-(8, 8, 8, '2026-08-01 09:30:00', 'COMPLETED'),
-(9, 1, 4, '2026-08-10 16:00:00', 'BOOKED'),
-(10, 2, 1, '2026-08-12 10:00:00', 'CANCELLED');
+(6, 6, 1, '2026-07-28 15:00:00', 'COMPLETED'),
+(7, 1, 4, '2026-08-10 16:00:00', 'BOOKED'),
+(8, 2, 1, '2026-08-12 10:00:00', 'CANCELLED');
 
 -- Consultations (for completed appointments)
 INSERT INTO consultation (id, appointment_id, symptoms, diagnosis, notes) VALUES
@@ -72,13 +65,7 @@ INSERT INTO consultation (id, appointment_id, symptoms, diagnosis, notes) VALUES
  'Parent counselled on steam inhalation. No antibiotics needed currently.'),
 (6, 6, 'Recurrent headaches, blurred vision episodes',
  'Tension-type headache, rule out migraine',
- 'MRI scheduled. Maintain sleep diary and reduce screen time.'),
-(7, 7, 'Irregular periods, pelvic discomfort',
- 'Polycystic ovary syndrome (PCOS)',
- 'Ultrasound confirms ovarian cysts. Diet and exercise plan discussed.'),
-(8, 8, 'Ear pain, blocked nose, reduced hearing',
- 'Acute otitis media, bilateral sinus congestion',
- 'Steam inhalation twice daily. Follow-up ENT check in 10 days.');
+ 'MRI scheduled. Maintain sleep diary and reduce screen time.');
 
 -- Prescriptions (one per consultation)
 INSERT INTO prescription (id, consultation_id, medicine, dosage, frequency, duration, instructions) VALUES
@@ -99,10 +86,12 @@ INSERT INTO prescription (id, consultation_id, medicine, dosage, frequency, dura
  'Use spacer with inhaler. Seek care if breathing worsens.'),
 (6, 6, 'Propranolol 40mg + Sumatriptan 50mg',
  '1 tab Propranolol daily, Sumatriptan PRN', 'Daily + at headache onset', '30 days',
- 'Avoid triggers: stress, skipped meals. Do not exceed 2 Sumatriptan/day.'),
-(7, 7, 'Metformin 500mg + Myo-inositol 2g',
- '1 tablet + 1 sachet', 'Twice daily with meals', '90 days',
- 'Track menstrual cycle. Weight loss target: 5 kg in 3 months.'),
-(8, 8, 'Amoxicillin 500mg + Xylometazoline nasal drops',
- '1 capsule + 2 drops per nostril', 'Capsule thrice daily, drops twice daily', '7 days',
- 'Complete antibiotic course. Do not use nasal drops beyond 5 days.');
+ 'Avoid triggers: stress, skipped meals. Do not exceed 2 Sumatriptan/day.');
+
+-- Reset auto-increment counters after explicit IDs
+ALTER TABLE users AUTO_INCREMENT = 15;
+ALTER TABLE patient AUTO_INCREMENT = 7;
+ALTER TABLE doctor AUTO_INCREMENT = 6;
+ALTER TABLE appointment AUTO_INCREMENT = 9;
+ALTER TABLE consultation AUTO_INCREMENT = 7;
+ALTER TABLE prescription AUTO_INCREMENT = 7;
