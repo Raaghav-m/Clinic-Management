@@ -57,6 +57,6 @@ jobs:
 
       - name: Push image to Docker hub
         working-directory: frontend
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/clinic-frontend:latest .
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/clinic-frontend:latest
 
 
