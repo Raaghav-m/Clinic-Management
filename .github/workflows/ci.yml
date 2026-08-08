@@ -36,3 +36,27 @@ jobs:
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/clinic-backend:latest
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+            node-version: '22'
+            cache: npm
+            cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Build Docker image
+        working-directory: frontend
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/clinic-frontend:latest ./frontend
+
+      - name: Push image to Docker hub
+        working-directory: frontend
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/clinic-frontend:latest ./frontend
+
+
