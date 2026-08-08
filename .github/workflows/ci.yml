@@ -24,3 +24,6 @@ jobs:
 
       - name: Build with Maven
         run: ./mvnw clean package
+
+      - name: Build Docker image
+        run: docker build -t clinic-backend:ci .
