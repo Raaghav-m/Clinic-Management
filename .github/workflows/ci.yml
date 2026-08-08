@@ -7,7 +7,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -25,5 +24,15 @@ jobs:
       - name: Build with Maven
         run: ./mvnw clean package
 
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build Docker image
-        run: docker build -t clinic-backend:ci .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/clinic-backend:latest .
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/clinic-backend:latest
+
