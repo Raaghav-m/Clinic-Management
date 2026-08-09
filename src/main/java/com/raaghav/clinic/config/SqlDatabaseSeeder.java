@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
-@Profile("docker")
+@Profile("prod")
 public class SqlDatabaseSeeder {
 
     private static final Logger log = LoggerFactory.getLogger(SqlDatabaseSeeder.class);
