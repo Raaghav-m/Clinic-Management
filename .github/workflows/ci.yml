@@ -58,5 +58,17 @@ jobs:
       - name: Push image to Docker hub
         working-directory: frontend
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/clinic-frontend:latest
-
-
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            cd ~/clinic
+            docker-compose pull
+            docker-compose up -d
