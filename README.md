@@ -120,7 +120,7 @@ On first production startup, Hibernate creates the schema and `SqlDatabaseSeeder
 
 ### ER diagram
 
-Clinic Management System ER diagram
+![Clinic Management System ER diagram](erdiagram.png)
 
 *Diagram source: [dbdiagram.io](https://dbdiagram.io)*
 
